@@ -22,6 +22,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+
     @Transactional
     public StatusResponseDto signup(@Valid SignupRequestDto signupRequestDto){
         String username = signupRequestDto.getUsername();
