@@ -38,6 +38,7 @@ public class UserService {
         if (foundEmail.isPresent()){
             throw new IllegalArgumentException("중복된 이메일 존재");
         }
+
         Optional<User> foundNickname = userRepository.findByNickname(nickname);
         if (foundNickname.isPresent()){
             throw new IllegalArgumentException("중복된 닉네임 존재");
