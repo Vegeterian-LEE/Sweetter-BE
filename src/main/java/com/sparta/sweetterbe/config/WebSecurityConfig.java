@@ -48,7 +48,6 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**")
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
