@@ -1,5 +1,6 @@
 package com.sparta.sweetterbe.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,21 +9,25 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "comment_like")
-public class CommentLike {
+@AllArgsConstructor
+@Table(name = "post_like")
+public class PostLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    private Comment comment;
+    @JoinColumn(name = "post_id")
+    private Post post;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
-    public CommentLike(Comment comment, User user){
-        this.comment = comment;
+    public PostLike(Post post, User user){
+        this.post = post;
         this.user = user;
     }
+
 }

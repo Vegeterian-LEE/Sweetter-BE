@@ -1,13 +1,14 @@
 package com.sparta.sweetterbe.controller;
 
+import com.sparta.sweetterbe.dto.IsLikeResponseDto;
 import com.sparta.sweetterbe.dto.StatusResponseDto;
+import com.sparta.sweetterbe.security.UserDetailsImpl;
+
 import com.sparta.sweetterbe.service.PostService;
 import com.sparta.sweetterbe.service.S3UploadService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -28,4 +29,10 @@ public class PostController {
         return StatusResponseDto.success(s3UploadService.uploadFiles(multipartFiles, "sweetter"));
     }
 
+
+    //게시글 좋아요 기능
+    @PostMapping("/post/like/{postId}")
+    public StatusResponseDto<IsLikeResponseDto> likePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return postService.likePost(postId, userDetails);
+    }
 }
