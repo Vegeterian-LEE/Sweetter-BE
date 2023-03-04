@@ -58,8 +58,8 @@ public class PostController {
 
 
     //게시글 좋아요 기능
-    @PostMapping("/post/like/{postId}")
-    public StatusResponseDto<IsLikeResponseDto> likePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return postService.likePost(postId, userDetails);
-    }
+//    @PostMapping("/post/like/{postId}")
+//    public StatusResponseDto<IsLikeResponseDto> likePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        return postService.likePost(postId, userDetails);
+//    }
 }

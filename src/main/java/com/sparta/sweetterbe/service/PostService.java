@@ -111,18 +111,18 @@ public class PostService {
     }
 
     // 게시글 좋아요 기능
-    public StatusResponseDto<IsLikeResponseDto> likePost(Long id, UserDetailsImpl userDetails) {
-        Post post = postRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("게시글을 찾지 못했습니다.")
-        );
-        Optional<PostLike> postLike = postLikeRepository.findByPostAndUser(post, userDetails.getUser());
-        if (postLike.isPresent()) {
-            postLikeRepository.deleteById(postLike.get().getId());
-            return StatusResponseDto.success(new IsLikeResponseDto("해당 게시글의 좋아요가 취소 되었습니다.", false));
-        }
-        postLikeRepository.save(new PostLike(post, userDetails.getUser()));
-        return StatusResponseDto.success(new IsLikeResponseDto("해당 게시글의 좋아요가 추가 되었습니다.", true));
-    }
+//    public StatusResponseDto<IsLikeResponseDto> likePost(Long id, UserDetailsImpl userDetails) {
+//        Post post = postRepository.findById(id).orElseThrow(
+//                () -> new EntityNotFoundException("게시글을 찾지 못했습니다.")
+//        );
+//        List<PostLike> postLike = postLikeRepository.findByPostAndUser(post, userDetails.getUser());
+//        if (postLike != null) {
+//            postLikeRepository.deleteById(postLike.get().getId());
+//            return StatusResponseDto.success(new IsLikeResponseDto("해당 게시글의 좋아요가 취소 되었습니다.", false));
+//        }
+//        postLikeRepository.save(new PostLike(post, userDetails.getUser()));
+//        return StatusResponseDto.success(new IsLikeResponseDto("해당 게시글의 좋아요가 추가 되었습니다.", true));
+//    }
 
     //해당 게시물이 존재하는지 알아 보는 경우
     @Transactional(readOnly = true)
