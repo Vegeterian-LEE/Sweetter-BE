@@ -62,7 +62,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .antMatchers("/docs").permitAll()
                 .antMatchers("/api/user/signup").permitAll()
                 .antMatchers("/api/user/login").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/studies/**").permitAll()
+               // .antMatchers(HttpMethod.GET, "/api/studies/**").permitAll()
                 .anyRequest().authenticated()
 
                 // JWT 인증/인가를 사용하기 위한 설정
