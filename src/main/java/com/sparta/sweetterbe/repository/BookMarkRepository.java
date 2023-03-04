@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface BookMarkRepository extends JpaRepository<BookMark, Long> {
     Optional<BookMark> findById(Long id);
-    Optional<BookMark> findByUserAndBookMark(User user, BookMark bookMark);
+    Optional<BookMark> findByIdAndUserId(Long BookmarkId,Long userId);
 }
