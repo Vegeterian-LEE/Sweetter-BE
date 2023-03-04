@@ -19,11 +19,11 @@ public class User extends TimeStamped{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, unique = true)
-    private String username;
+    private String userId;
     @Column(nullable = false)
     private String password;
     @Column(nullable = false, unique = true)
-    private String nickname;
+    private String username;
     @Email
     @Column(nullable = false, unique = true)
     private String email;
@@ -36,10 +36,10 @@ public class User extends TimeStamped{
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    public User(String username, String password, String nickName, String email, UserRoleEnum role) {
-        this.username = username;
+    public User(String userId, String password, String username, String email, UserRoleEnum role) {
+        this.userId = userId;
         this.password = password;
-        this.nickname = nickName;
+        this.username = username;
         this.email = email;
         this.role = role;
     }
@@ -47,7 +47,7 @@ public class User extends TimeStamped{
     public void update(UserRequestDto userRequestDto) {
         this.image = userRequestDto.getImage();
         this.introduction = userRequestDto.getIntroduction();
-        this.nickname = userRequestDto.getNickname();
+        this.username = userRequestDto.getUsername();
         this.email = userRequestDto.getEmail();
     }
 

@@ -1,5 +1,6 @@
 package com.sparta.sweetterbe.controller;
 
+import com.sparta.sweetterbe.dto.StatusResponseDto;
 import com.sparta.sweetterbe.service.PostService;
 import com.sparta.sweetterbe.service.S3UploadService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,8 @@ public class PostController {
 
     // 다중 업로드 가능하게 List로 받습니다.
     @PostMapping(value="/upload")
-    public List<String> uploadImage (@RequestParam(value = "image") List<MultipartFile> multipartFiles) throws IOException {
-        return s3UploadService.uploadFiles(multipartFiles, "sweetter");
+    public StatusResponseDto<List<String>> uploadImage (@RequestParam(value = "image") List<MultipartFile> multipartFiles) throws IOException {
+        return StatusResponseDto.success(s3UploadService.uploadFiles(multipartFiles, "sweetter"));
     }
 
 }

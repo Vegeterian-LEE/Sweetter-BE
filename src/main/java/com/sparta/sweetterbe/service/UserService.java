@@ -5,6 +5,7 @@ import com.sparta.sweetterbe.entity.User;
 import com.sparta.sweetterbe.entity.UserRoleEnum;
 import com.sparta.sweetterbe.jwt.JwtUtil;
 import com.sparta.sweetterbe.repository.UserRepository;
+import com.sparta.sweetterbe.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,38 +25,38 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public StatusResponseDto signup(@Valid SignupRequestDto signupRequestDto){
-        String username = signupRequestDto.getUsername();
+    public String signup(@Valid SignupRequestDto signupRequestDto){
+        String userId = signupRequestDto.getUserId();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
-        String nickname = signupRequestDto.getNickname();
+        String username = signupRequestDto.getUsername();
         String email = signupRequestDto.getEmail();
 
-        Optional<User> foundUsername = userRepository.findByUsername(username);
-        if (foundUsername.isPresent()){
-            throw new IllegalArgumentException("중복된 사용자 존재");
+        Optional<User> foundUserId = userRepository.findByUserId(userId);
+        if (foundUserId.isPresent()){
+            throw new IllegalArgumentException("중복된 아이디 존재");
         }
         Optional<User> foundEmail = userRepository.findByEmail(email);
         if (foundEmail.isPresent()){
             throw new IllegalArgumentException("중복된 이메일 존재");
         }
 
-        Optional<User> foundNickname = userRepository.findByNickname(nickname);
-        if (foundNickname.isPresent()){
-            throw new IllegalArgumentException("중복된 닉네임 존재");
+        Optional<User> foundUsername = userRepository.findByUsername(username);
+        if (foundUsername.isPresent()){
+            throw new IllegalArgumentException("중복된 유저 네임 존재");
         }
         UserRoleEnum role = UserRoleEnum.USER;
 
-        User user = new User(username, password, nickname, email, role);
+        User user = new User(userId, password, username, email, role);
         userRepository.save(user);
-        return  StatusResponseDto.success("가입 성공!") ;
+        return  "회원 가입 성공!";
     }
 
     @Transactional(readOnly = true)
     public UserResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response){
-        String username = loginRequestDto.getUsername();
+        String email = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
 
-        User user = userRepository.findByUsername(username).orElseThrow(
+        User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new IllegalArgumentException("등록된 사용자가 없습니다")
         );
 
@@ -68,26 +69,26 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto updateProfile(UserRequestDto userRequestDto, User user) {
-        User master = userRepository.findById(user.getId()).orElseThrow(
+    public UserResponseDto updateProfile(UserRequestDto userRequestDto, UserDetailsImpl userDetail) {
+        User user = userRepository.findById(userDetail.getUser().getId()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다."));
         if (!userRequestDto.getNewPassword().isEmpty() && userRequestDto.getNewPassword().equals(userRequestDto.getNewPasswordConfirm())){
-            master.updatePassword(passwordEncoder.encode(userRequestDto.getNewPassword()));
+            user.updatePassword(passwordEncoder.encode(userRequestDto.getNewPassword()));
         }
         else if (!userRequestDto.getNewPassword().equals(userRequestDto.getNewPasswordConfirm())) {
             throw new IllegalArgumentException("변경하려는 비밀 번호가 일치하지 않습니다.");
         }
-        master.update(userRequestDto);
-        return new UserResponseDto(master);
+        user.update(userRequestDto);
+        return new UserResponseDto(user);
     }
 
     @Transactional
-    public boolean checkPassword(PasswordRequestDto passwordRequestDto, User user) {
-        User master = userRepository.findById(user.getId()).orElseThrow(
+    public String checkPassword(PasswordRequestDto passwordRequestDto, UserDetailsImpl userDetail) {
+        User user = userRepository.findById(userDetail.getUser().getId()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다."));
-        if (!passwordEncoder.matches(passwordRequestDto.getPassword(), master.getPassword())){
+        if (!passwordEncoder.matches(passwordRequestDto.getPassword(), user.getPassword())){
             throw new IllegalArgumentException("비밀 번호가 틀렸습니다.");
         }
-        return true;
+        return "비밀번호가 일치합니다.";
     }
 }
