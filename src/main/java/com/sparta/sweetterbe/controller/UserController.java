@@ -16,7 +16,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
-    //회원가입 완료 후 반환값 > FE와 협의 필요 - 정환
     @PostMapping("/signup")
     public StatusResponseDto<String> signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
         return StatusResponseDto.success(userService.signup(signupRequestDto));
