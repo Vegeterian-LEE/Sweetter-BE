@@ -2,7 +2,6 @@ package com.sparta.sweetterbe.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 
