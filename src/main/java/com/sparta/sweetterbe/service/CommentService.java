@@ -1,6 +1,7 @@
 package com.sparta.sweetterbe.service;
 
 import com.sparta.sweetterbe.dto.CommentResponseDto;
+import com.sparta.sweetterbe.dto.IsLikeResponseDto;
 import com.sparta.sweetterbe.dto.StatusResponseDto;
 import com.sparta.sweetterbe.entity.*;
 import com.sparta.sweetterbe.repository.CommentLikeRepository;
@@ -50,14 +51,14 @@ public class CommentService {
     }
 
     // 댓글 좋아요
-    public StatusResponseDto<String> likeComment(Long id, UserDetailsImpl userDetails) {
+    public StatusResponseDto<IsLikeResponseDto> likeComment(Long id, UserDetailsImpl userDetails) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 댓글"));
         Optional<CommentLike> optionalCommentLike = commentLikeRepository.findByCommentAndUser(comment, userDetails.getUser());
         if (optionalCommentLike.isPresent()) { // 유저가 이미 좋아요를 눌렀을 때
             commentLikeRepository.deleteById(optionalCommentLike.get().getId());
-            return StatusResponseDto.success("댓글 좋아요 취소");
+            return StatusResponseDto.success(new IsLikeResponseDto("댓글에 좋아요가 취소 되었습니다.", false));
         }
         commentLikeRepository.save(new CommentLike(comment, userDetails.getUser()));
-        return StatusResponseDto.success("댓글 좋아요 성공");
+        return StatusResponseDto.success(new IsLikeResponseDto("댓글 좋아요 성공", true));
     }
 }

@@ -2,6 +2,7 @@ package com.sparta.sweetterbe.controller;
 
 
 import com.sparta.sweetterbe.dto.CommentResponseDto;
+import com.sparta.sweetterbe.dto.IsLikeResponseDto;
 import com.sparta.sweetterbe.dto.StatusResponseDto;
 import com.sparta.sweetterbe.security.UserDetailsImpl;
 import com.sparta.sweetterbe.service.CommentService;
@@ -33,7 +34,7 @@ public class CommentController {
 
     // 댓글 좋아요
     @PostMapping("/comment/like/{id}")
-    public StatusResponseDto<String> likeComment(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public StatusResponseDto<IsLikeResponseDto> likeComment(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return commentService.likeComment(id, userDetails);
     }
 
