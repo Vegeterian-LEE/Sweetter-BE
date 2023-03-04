@@ -18,25 +18,25 @@ public class UserController {
     private final UserService userService;
     //회원가입 완료 후 반환값 > FE와 협의 필요 - 정환
     @PostMapping("/signup")
-    public StatusResponseDto signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
-        return userService.signup(signupRequestDto);
+    public StatusResponseDto<String> signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
+        return StatusResponseDto.success(userService.signup(signupRequestDto));
     }
     //로그인 후 페이지 구성에 사용할 유저정보 리턴 - 정환
     @PostMapping("/login")
-    public UserResponseDto login(@RequestBody LoginRequestDto loginRequestDto,
-                                 @Parameter(hidden = true) HttpServletResponse response){
-        return userService.login(loginRequestDto, response);
+    public StatusResponseDto<UserResponseDto> login(@RequestBody LoginRequestDto loginRequestDto,
+                                         @Parameter(hidden = true) HttpServletResponse response){
+        return StatusResponseDto.success(userService.login(loginRequestDto, response));
     }
     //리턴 값 FE와 협의 필요 - 정환
     @PostMapping("/checkpw")
-    public boolean checkPassword(@RequestBody PasswordRequestDto passwordRequestDto,
+    public StatusResponseDto<String> checkPassword(@RequestBody PasswordRequestDto passwordRequestDto,
                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.checkPassword(passwordRequestDto, userDetails.getUser());
+        return StatusResponseDto.success(userService.checkPassword(passwordRequestDto, userDetails));
     }
     //내 정보 변경
     @PutMapping("/settings/profile")
-    public UserResponseDto updateProfile(@RequestBody UserRequestDto userRequestDto,
+    public StatusResponseDto<UserResponseDto> updateProfile(@RequestBody UserRequestDto userRequestDto,
                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.updateProfile(userRequestDto, userDetails.getUser());
+        return StatusResponseDto.success(userService.updateProfile(userRequestDto, userDetails));
     }
 }
