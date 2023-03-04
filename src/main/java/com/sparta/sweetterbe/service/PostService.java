@@ -1,10 +1,8 @@
 package com.sparta.sweetterbe.service;
 
-import com.sparta.sweetterbe.dto.UserPageDto;
+import com.sparta.sweetterbe.dto.*;
 import com.sparta.sweetterbe.entity.*;
 import com.sparta.sweetterbe.repository.*;
-import com.sparta.sweetterbe.dto.IsLikeResponseDto;
-import com.sparta.sweetterbe.dto.StatusResponseDto;
 import com.sparta.sweetterbe.entity.Post;
 import com.sparta.sweetterbe.repository.PostLikeRepository;
 import com.sparta.sweetterbe.security.UserDetailsImpl;
@@ -17,6 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
+import javax.security.sasl.AuthenticationException;
 import java.util.Optional;
 
 @Service
@@ -28,6 +27,8 @@ public class PostService {
     private final UserRepository userRepository;
     private final RetweetRepository retweetRepository;
     private final CommentRepository commentRepository;
+
+
     //지금 다 유저로 찾고 있는데 id값(숫자)로 찾아야하는것 아닐지 고민좀..
     public Object getUserPage(String userId, UserDetailsImpl userDetails) {
         User user = userRepository.findByUserId(userId).orElseThrow(
@@ -63,6 +64,31 @@ public class PostService {
         }
         return new UserPageDto(tweetList, tweetAndReplyList, MediaPostList, likePostList);
     }
+
+    //게시글 생성
+    public StatusResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, UserDetailsImpl userDetails){
+        Post post = new Post(requestDto, userDetails.getUser());
+        postRepository.save(post);
+        return StatusResponseDto.success(new PostResponseDto(post));
+    }
+
+    //게시글 삭제
+    public StatusResponseDto<String> deletePost(Long postId, UserDetailsImpl userDetails) throws AuthenticationException {
+        User user = userDetails.getUser();
+        Post post = postRepository.findById(postId).orElseThrow(
+                ()-> new EntityNotFoundException("해당 게시글을 찾지 못합니다.")
+        );
+
+        if (user.getRole() == UserRoleEnum.ADMIN || user.getUserId().equals(post.getUser().getUsername())){
+            postRepository.deleteById(postId);
+        }else {
+            throw  new AuthenticationException("작성자만 삭제가 가능합니다.");
+        }
+        return StatusResponseDto.success("삭제 성공");
+    }
+
+    //리트윗 기능
+
 
 /*    public StatusResponseDto<IsLikeResponseDto> likePost(Long id, UserDetailsImpl userDetails){
         Post post = postRepository.findById(id).orElseThrow(

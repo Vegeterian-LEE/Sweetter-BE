@@ -1,13 +1,18 @@
 package com.sparta.sweetterbe.controller;
 
+import com.sparta.sweetterbe.dto.PostRequestDto;
+import com.sparta.sweetterbe.dto.PostResponseDto;
 import com.sparta.sweetterbe.dto.StatusResponseDto;
 
+import com.sparta.sweetterbe.security.UserDetailsImpl;
 import com.sparta.sweetterbe.service.PostService;
 import com.sparta.sweetterbe.service.S3UploadService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.security.sasl.AuthenticationException;
 import java.io.IOException;
 import java.util.List;
 
@@ -31,6 +36,20 @@ public class PostController {
                                                     @AuthenticationPrincipal UserDetailsImpl userDetails){
         return StatusResponseDto.success(PostService.getUserPage(userId, userDetails));
     }*/
+
+    //게시글 작성
+    @PostMapping("/post")
+    public StatusResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return postService.createPost(requestDto, userDetails);
+    }
+
+    //게시글 삭제
+    @DeleteMapping("/post/{postId}")
+    public StatusResponseDto<String> deletePost(@PathVariable Long postId,@AuthenticationPrincipal UserDetailsImpl userDetails ) throws AuthenticationException {
+        return postService.deletePost(postId, userDetails);
+    }
+
+
 
 
     //게시글 좋아요 기능
