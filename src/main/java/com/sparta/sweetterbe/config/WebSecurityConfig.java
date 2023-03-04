@@ -80,7 +80,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         registry
                 .addMapping("/**") // 프로그램에서 제공하는 URL
                 .allowedOrigins("http://localhost:3000")
-                .allowedOrigins("https://api.jingyulee.shop/docs") // 요청을 허용할 출처를 명시, 전체 허용 (가능하다면 목록을 작성한다.
+                .allowedOrigins("https://api.jingyulee.shop/docs")
+                .allowedOrigins("http://api.jingyulee.shop/docs")// 요청을 허용할 출처를 명시, 전체 허용 (가능하다면 목록을 작성한다.
                 .allowedMethods("*") // 어떤 메서드를 허용할 것인지 (GET, POST...)
                 .allowedHeaders("*", "Content-Type") // 어떤 헤더들을 허용할 것인지
                 .exposedHeaders("Authorization")
