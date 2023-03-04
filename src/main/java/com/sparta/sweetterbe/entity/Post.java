@@ -21,7 +21,13 @@ public class Post extends TimeStamped {
     private String content;
     //entity 안에서 Arraylist나 String[] 자료형으로 저장 가능할까요 > 아니면 image1 ~ image4로 저장해야하는데... - 정환
     @Column
-    private String image;
+    private String image1;
+    @Column
+    private String image2;
+    @Column
+    private String image3;
+    @Column
+    private String image4;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
