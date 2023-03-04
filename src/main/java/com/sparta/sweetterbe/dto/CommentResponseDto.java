@@ -27,14 +27,14 @@ public class CommentResponseDto {
         this.modifiedAt = comment.getModifiedAt();
     }
 
-    public static CommentResponseDto from(Comment comment){
-        return CommentResponseDto.builder()
-                .id(comment.getId())
-                .content(comment.getContent())
-                .username(comment.getUser().getUsername())
-                .createdAt(comment.getCreatedAt())
-                .nickname(comment.getUser().getNickname())
-                .modifiedAt(comment.getModifiedAt())
-                .build();
-    }
+//    public static CommentResponseDto from(Comment comment){
+//        return CommentResponseDto.builder()
+//                .id(comment.getId())
+//                .content(comment.getContent())
+//                .username(comment.getUser().getUsername())
+//                .createdAt(comment.getCreatedAt())
+//                .nickname(comment.getUser().getNickname())
+//                .modifiedAt(comment.getModifiedAt())
+//                .build();
+//    }
 }
