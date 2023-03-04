@@ -9,6 +9,7 @@ import com.sparta.sweetterbe.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -88,7 +89,26 @@ public class PostService {
     }
 
     //리트윗 기능
+    @Transactional
+    public StatusResponseDto<?> reTweetAndUnreTweet(Long postId, UserDetailsImpl userDetails){
+        User user = userDetails.getUser();
+        Post post = isPresentPost(postId);
+        List<Retweet> retweetList = retweetRepository.findAllByUserIdAndPostId(user.getId(), postId);
 
+        for (Retweet retweet: retweetList){
+            if(retweet.getUser().equals(user)){
+                retweetRepository.delete(retweet);
+                return StatusResponseDto.success(false);
+            }
+        }
+
+        Retweet retweet = Retweet.builder()
+                .user(user)
+                .post(post)
+                .build();
+        retweetRepository.save(retweet);
+        return StatusResponseDto.success(true);
+    }
 
 /*    public StatusResponseDto<IsLikeResponseDto> likePost(Long id, UserDetailsImpl userDetails){
         Post post = postRepository.findById(id).orElseThrow(
@@ -102,4 +122,11 @@ public class PostService {
         postLikeRepository.save(new PostLike(post, userDetails.getUser()));
         return StatusResponseDto.success(new IsLikeResponseDto("해당 게시글의 좋아요가 추가 되었습니다.", true));
     }*/
+
+    //해당 게시물이 존재하는지 알아 보는 경우
+    @Transactional(readOnly = true)
+    public Post isPresentPost(Long id) {
+        Optional<Post> optionalPost_review = postRepository.findById(id);
+        return optionalPost_review.orElse(null);
+    }
 }

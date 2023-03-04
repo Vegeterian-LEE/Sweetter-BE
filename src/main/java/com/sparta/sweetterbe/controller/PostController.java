@@ -49,6 +49,11 @@ public class PostController {
         return postService.deletePost(postId, userDetails);
     }
 
+    //리트윗 기능
+    @PostMapping("/retweet/{postId}")
+    public StatusResponseDto<?> reTweetAndUnreTweet(@PathVariable Long postId,@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return postService.reTweetAndUnreTweet(postId, userDetails);
+    }
 
 
 

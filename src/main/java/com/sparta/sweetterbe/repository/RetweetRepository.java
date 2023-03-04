@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface RetweetRepository extends JpaRepository<Retweet, Long> {
     List<Retweet> findAllByUserOrderByCreatedAtDesc(User user);
+    List<Retweet> findAllByUserIdAndPostId(Long userId, Long postId);
 }
