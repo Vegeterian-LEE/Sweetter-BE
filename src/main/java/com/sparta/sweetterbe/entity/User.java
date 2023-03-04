@@ -1,5 +1,6 @@
 package com.sparta.sweetterbe.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.sweetterbe.dto.UserRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import java.util.List;
 
 @Entity(name = "users")
 @Getter
@@ -35,6 +37,18 @@ public class User extends TimeStamped{
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "follower")
+    @JsonIgnore
+    private List<Follow> followers;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "following")
+    @JsonIgnore
+    private List<Follow> followings;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonIgnore
+    private List<BookMark> bookMarkList;
 
     public User(String userId, String password, String username, String email, UserRoleEnum role) {
         this.userId = userId;

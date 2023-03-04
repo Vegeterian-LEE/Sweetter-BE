@@ -16,7 +16,12 @@ public class BookMark {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    public BookMark(User user) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Post post;
+
+
+    public BookMark(User user, Post post) {
         this.user = user;
+        this.post = post;
     }
 }

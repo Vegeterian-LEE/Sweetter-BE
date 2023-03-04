@@ -5,8 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Getter
@@ -31,6 +30,11 @@ public class Post extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    //순서는 없지만 중복제거 가능
+    @OneToMany(mappedBy = "post", orphanRemoval = true, cascade=CascadeType.REMOVE)
+    Set<BookMark> bookMarkSet = new HashSet<>();
+
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     List<PostLike> likes = new ArrayList<>();

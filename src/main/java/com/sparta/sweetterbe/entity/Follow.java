@@ -1,5 +1,6 @@
 package com.sparta.sweetterbe.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,10 +18,17 @@ public class Follow {
     private boolean isAccepted = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    @JsonIgnore
+    private User follower;
 
-    public Follow(User user) {
-        this.user = user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private User following;
+
+
+    public Follow(User follower, User following) {
+        this.follower = follower;
+        this.following = following;
     }
 
     public void approve() {
