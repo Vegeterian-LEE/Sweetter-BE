@@ -1,13 +1,10 @@
 package com.sparta.sweetterbe.controller;
 
-import com.sparta.sweetterbe.dto.IsLikeResponseDto;
 import com.sparta.sweetterbe.dto.StatusResponseDto;
-import com.sparta.sweetterbe.security.UserDetailsImpl;
 
 import com.sparta.sweetterbe.service.PostService;
 import com.sparta.sweetterbe.service.S3UploadService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,15 +21,21 @@ public class PostController {
 
 
     // 다중 업로드 가능하게 List로 받습니다.
-    @PostMapping(value="/upload")
+    @PostMapping("/upload")
     public StatusResponseDto<List<String>> uploadImage (@RequestParam(value = "image") List<MultipartFile> multipartFiles) throws IOException {
         return StatusResponseDto.success(s3UploadService.uploadFiles(multipartFiles, "sweetter"));
     }
 
+    /*@GetMapping("/{userId}")
+    public StatusResponseDto<List<PostDto>> getUserPage(@PathVariable String userId,
+                                                    @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return StatusResponseDto.success(PostService.getUserPage(userId, userDetails));
+    }*/
+
 
     //게시글 좋아요 기능
-    @PostMapping("/post/like/{postId}")
+/*    @PostMapping("/post/like/{postId}")
     public StatusResponseDto<IsLikeResponseDto> likePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return postService.likePost(postId, userDetails);
-    }
+    }*/
 }
