@@ -1,8 +1,11 @@
-/*
 package com.sparta.sweetterbe.config;
 
 
 
+import com.sparta.sweetterbe.jwt.JwtAuthFilter;
+import com.sparta.sweetterbe.jwt.JwtUtil;
+import com.sparta.sweetterbe.security.CustomAccessDeniedHandler;
+import com.sparta.sweetterbe.security.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -84,4 +87,3 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .maxAge((long)3600 * 24 * 365); // preflight 요청에 대한 응답을 브라우저에서 캐싱하는 시간;
     }
 }
-*/
