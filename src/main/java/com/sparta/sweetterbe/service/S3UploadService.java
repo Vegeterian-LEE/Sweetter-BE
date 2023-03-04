@@ -24,13 +24,16 @@ public class S3UploadService {
     private String bucket;
 
     public List<String> uploadFiles(List<MultipartFile> multipartFiles, String dirName) throws IOException {
-        List<String> imagesUrl = new ArrayList<>();
+        List<String> imageUrls = new ArrayList<>();
+        if (multipartFiles.size() > 4) {
+            throw new IllegalArgumentException("error: 파일은 최대 4개까지 첨부가능합니다.");
+        }
         for (MultipartFile multipartfile : multipartFiles){
             File uploadFile = convert(multipartfile)  // 파일 변환할 수 없으면 에러
                     .orElseThrow (() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
-            imagesUrl.add(upload(uploadFile, dirName));
+            imageUrls.add(upload(uploadFile, dirName));
         }
-        return imagesUrl;
+        return imageUrls;
     }
 
     public String upload(File uploadFile, String filePath) {
