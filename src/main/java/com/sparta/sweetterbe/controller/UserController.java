@@ -3,6 +3,7 @@ package com.sparta.sweetterbe.controller;
 import com.sparta.sweetterbe.dto.*;
 import com.sparta.sweetterbe.security.UserDetailsImpl;
 import com.sparta.sweetterbe.service.UserService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,8 @@ public class UserController {
     }
     //로그인 후 페이지 구성에 사용할 유저정보 리턴 - 정환
     @PostMapping("/login")
-    public UserResponseDto login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response){
+    public UserResponseDto login(@RequestBody LoginRequestDto loginRequestDto,
+                                 @Parameter(hidden = true) HttpServletResponse response){
         return userService.login(loginRequestDto, response);
     }
     //리턴 값 FE와 협의 필요 - 정환
