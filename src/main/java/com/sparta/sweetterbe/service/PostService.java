@@ -11,13 +11,11 @@ import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 import javax.security.sasl.AuthenticationException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,40 +44,60 @@ public class PostService {
     }
 
     //지금 다 유저로 찾고 있는데 id값(숫자)로 찾아야하는것 아닐지 고민좀..
-    public UserPageDto getUserPage(String userId, UserDetailsImpl userDetails) {
-        User user = userRepository.findByUserId(userId).orElseThrow(
+    public UserPageDto getUserPage(UserDetailsImpl userDetails) {
+        User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
                 () -> new EntityNotFoundException("회원을 찾지 못했습니다.")
         );
         // 각 포스트에 댓글 갯수 / 좋아요 갯수 / 리트윗 갯수 붙어서 나가야함
         //작성글 + 리트윗 글
-        List<Retweet> retweetList = retweetRepository.findAllByUserOrderByCreatedAtDesc(user);
-        List<Post> postList = postRepository.findAllByUserOrderByCreatedAtDesc(user);
-        List<Post> tweetList = postList;
-        for (int i = 0; i < retweetList.size(); i++) {
-            tweetList.add(retweetList.get(i).getPost());
+        List<Post> retweetList = new ArrayList<>((Collection) retweetRepository.findAllByUserOrderByCreatedAtDesc(user).get().getPost()) ;
+        List<Post> postList = postRepository.findAllByUserOrderByCreatedAtDesc(user);// 엔티티 모양이 달라서 같은 모양으로 맞춰줘야함.
+        List<PostResponseDto> tweetList = new ArrayList<>();
+        for (Post post : postList) {
+            tweetList.add(new PostResponseDto(post));
         }
-        // 중복 삭제처리 필요
-        tweetList.sort(Comparator.comparing(LocalDateTime::new)); // 다 합쳐서 시간순 정렬 해야하는데 아직 얘는 잘 모르겠음
+        for (Post post : retweetList){
+            tweetList.add(new PostResponseDto(post));
+        }
+
+        // 중복 삭제처리
+        tweetList.sort(Comparator.comparing(LocalDateTime::new));
+        tweetList = tweetList.stream().distinct().collect(Collectors.toList());
+//        Set<PostResponseDto> responseDtoSet = new HashSet<>(tweetLists);
+//        List<PostResponseDto> tweetList = new ArrayList<>(responseDtoSet);// 다 합쳐서 시간순 정렬 해야하는데 아직 얘는 잘 모르겠음
         //post가 아니라 댓글 갯수 / 좋아요 갯수 / 리트윗 갯수가 붙은 dto로 반환해야함
 
         //작성글, 리트윗글 내가 댓글 단 글까지
         List<Comment> commentList = commentRepository.findAllByUserOrderByCreatedAtDesc(user);
-        List<Post> tweetAndReplyList = tweetList;
+        List<PostResponseDto> tweetAndReplyList = tweetList;
         for (int i = 0; i < commentList.size(); i++) {
-            tweetAndReplyList.add(commentList.get(i).getPost());
+            tweetAndReplyList.add(new PostResponseDto(commentList.get(i).getPost()));
         }
         // 중복 삭제처리 필요
-        tweetAndReplyList.sort(Comparator.comparing(LocalDateTime::new)); // 다 합쳐서 시간순 정렬 해야하는데 아직 얘는 잘 모르겠음
+        tweetAndReplyList.sort(Comparator.comparing(LocalDateTime::new));
+        tweetAndReplyList = tweetAndReplyList.stream().distinct().collect(Collectors.toList());// 다 합쳐서 시간순 정렬 해야하는데 아직 얘는 잘 모르겠음
 
         //media가 있는 게시글
-        List<Post> MediaPostList = postRepository.findAllByIdOrderByCreatedAtDesc(user.getId());
+        List<Post> MediaList = postRepository.findAllByIdOrderByCreatedAtDesc(user.getId());
+        List<PostResponseDto> MediaPostList = new ArrayList<>();
+        for (int i = 0; i < MediaList.size(); i++){
+            if(MediaList.get(i).getImageUrls() == null){
+                MediaList.remove(i);
+            }else {
+                MediaPostList.add(new PostResponseDto(MediaList.get(i)));
+            }
+        }
+        MediaPostList.sort(Comparator.comparing(LocalDateTime::new));
+
+
         //이미지 없는걸로 선별 걸어서 다시
         //like한 게시글
         List<PostLike> likeList = postLikeRepository.findAllByUser(user);
-        List<Post> likePostList = new ArrayList<>();
-        for (int i = 0; i < likeList.size(); i++) {
-            likePostList.add(likeList.get(likeList.size() - 1 - i).getPost()); // 역순으로 집어넣어줘야 가장 최근에 좋아요 누른게 제일 위로
+        List<PostResponseDto> likePostList = new ArrayList<>();
+        for (int i = 0; i < likeList.size(); i++){
+            likePostList.add(new PostResponseDto(likeList.get(i).getPost()));
         }
+
         return new UserPageDto(tweetList, tweetAndReplyList, MediaPostList, likePostList);
     }
 
@@ -128,18 +146,18 @@ public class PostService {
     }
 
     // 게시글 좋아요 기능
-//    public StatusResponseDto<IsLikeResponseDto> likePost(Long id, UserDetailsImpl userDetails) {
-//        Post post = postRepository.findById(id).orElseThrow(
-//                () -> new EntityNotFoundException("게시글을 찾지 못했습니다.")
-//        );
-//        List<PostLike> postLike = postLikeRepository.findByPostAndUser(post, userDetails.getUser());
-//        if (postLike != null) {
-//            postLikeRepository.deleteById(postLike.get().getId());
-//            return StatusResponseDto.success(new IsLikeResponseDto("해당 게시글의 좋아요가 취소 되었습니다.", false));
-//        }
-//        postLikeRepository.save(new PostLike(post, userDetails.getUser()));
-//        return StatusResponseDto.success(new IsLikeResponseDto("해당 게시글의 좋아요가 추가 되었습니다.", true));
-//    }
+    public StatusResponseDto<IsLikeResponseDto> likePost(Long id, UserDetailsImpl userDetails) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("게시글을 찾지 못했습니다.")
+        );
+        Optional<PostLike> postLike = postLikeRepository.findByPostAndUser(post, userDetails.getUser());
+        if (postLike.isPresent()) {
+            postLikeRepository.deleteById(postLike.get().getId());
+            return StatusResponseDto.success(new IsLikeResponseDto("해당 게시글의 좋아요가 취소 되었습니다.", false));
+        }
+        postLikeRepository.save(new PostLike(post, userDetails.getUser()));
+        return StatusResponseDto.success(new IsLikeResponseDto("해당 게시글의 좋아요가 추가 되었습니다.", true));
+    }
 
     //해당 게시물이 존재하는지 알아 보는 경우
     @Transactional(readOnly = true)

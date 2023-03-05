@@ -6,18 +6,22 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+
 @Getter
 @Setter
+
 public class PostResponseDto {
 
     private Long id;
     private String content;
     private String userId;
     private String username;
-    private String imageUrl1;
-    private String imageUrl2;
-    private String imageUrl3;
-    private String imageUrl4;
+    private List<String> imageUrls;
+//    private String imageUrl2;
+//    private String imageUrl3;
+//    private String imageUrl4;
     private int commentCount;
     private int retweetCount;
     private int likeCount;
@@ -28,10 +32,7 @@ public class PostResponseDto {
     public PostResponseDto(Post post){
         this.id = post.getId();
         this.content = post.getContent();
-        this.imageUrl1 = post.getImage1();
-        this.imageUrl2 = post.getImage2();
-        this.imageUrl3 = post.getImage3();
-        this.imageUrl4 = post.getImage4();
+        this.imageUrls = post.getImageUrls();
         this.commentCount = post.getComments().size();
         this.retweetCount = post.getRetweets().size();
         this.likeCount = post.getLikes().size();
