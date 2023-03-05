@@ -25,7 +25,8 @@ public class GlobalExceptionHandler {
             UsernameNotFoundException.class,
             AuthenticationException.class,
             EntityNotFoundException.class,
-            AccessDeniedException.class
+            AccessDeniedException.class,
+            IllegalArgumentException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public StatusResponseDto<?> handle(Exception ex){

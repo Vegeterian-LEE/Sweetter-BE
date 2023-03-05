@@ -15,7 +15,7 @@ class SpringDocsConfig {
 
         Info info = new Info()
                 .version("v1.0.0")
-                .title("VIKING-BAND!❤️\u200D\uD83D\uDD25")
+                .title("Sweetter❤️\u200D\uD83D\uDD25")
                 .description("API Description");
 
         // SecuritySecheme명
