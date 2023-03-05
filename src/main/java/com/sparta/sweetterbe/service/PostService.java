@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 import javax.security.sasl.AuthenticationException;
@@ -51,18 +52,19 @@ public class PostService {
         //작성글 + 리트윗 글
         List<Post> retweetList = new ArrayList<>((Collection) retweetRepository.findAllByUserOrderByCreatedAtDesc(user).get().getPost()) ;
         List<Post> postList = postRepository.findAllByUserOrderByCreatedAtDesc(user);// 엔티티 모양이 달라서 같은 모양으로 맞춰줘야함.
-        List<PostResponseDto> tweetLists = new ArrayList<>();
+        List<PostResponseDto> tweetList = new ArrayList<>();
         for (Post post : postList) {
-            tweetLists.add(new PostResponseDto(post));
+            tweetList.add(new PostResponseDto(post));
         }
         for (Post post : retweetList){
-            tweetLists.add(new PostResponseDto(post));
+            tweetList.add(new PostResponseDto(post));
         }
 
         // 중복 삭제처리
-        tweetLists.sort(Comparator.comparing(LocalDateTime::new));
-        Set<PostResponseDto> responseDtoSet = new HashSet<>(tweetLists);
-        List<PostResponseDto> tweetList = new ArrayList<>(responseDtoSet);// 다 합쳐서 시간순 정렬 해야하는데 아직 얘는 잘 모르겠음
+        tweetList.sort(Comparator.comparing(LocalDateTime::new));
+        tweetList = tweetList.stream().distinct().collect(Collectors.toList());
+//        Set<PostResponseDto> responseDtoSet = new HashSet<>(tweetLists);
+//        List<PostResponseDto> tweetList = new ArrayList<>(responseDtoSet);// 다 합쳐서 시간순 정렬 해야하는데 아직 얘는 잘 모르겠음
         //post가 아니라 댓글 갯수 / 좋아요 갯수 / 리트윗 갯수가 붙은 dto로 반환해야함
 
         //작성글, 리트윗글 내가 댓글 단 글까지
@@ -72,7 +74,8 @@ public class PostService {
             tweetAndReplyList.add(new PostResponseDto(commentList.get(i).getPost()));
         }
         // 중복 삭제처리 필요
-        tweetAndReplyList.sort(Comparator.comparing(LocalDateTime::new)); // 다 합쳐서 시간순 정렬 해야하는데 아직 얘는 잘 모르겠음
+        tweetAndReplyList.sort(Comparator.comparing(LocalDateTime::new));
+        tweetAndReplyList = tweetAndReplyList.stream().distinct().collect(Collectors.toList());// 다 합쳐서 시간순 정렬 해야하는데 아직 얘는 잘 모르겠음
 
         //media가 있는 게시글
         List<Post> MediaList = postRepository.findAllByIdOrderByCreatedAtDesc(user.getId());
