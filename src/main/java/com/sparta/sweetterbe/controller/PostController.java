@@ -6,6 +6,7 @@ import com.sparta.sweetterbe.service.PostService;
 import com.sparta.sweetterbe.service.S3UploadService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,6 +56,11 @@ public class PostController {
     @GetMapping("/home")
     public HomePageDto getUserPage(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
         return postService.getHome(userDetails);
+    }
+
+    @GetMapping("/hottest")
+    public StatusResponseDto<List<PostResponseDto>> getPostByBookMark() {
+        return StatusResponseDto.success(postService.getPostsByQueryCondition());
     }
 
     //게시글 좋아요 기능

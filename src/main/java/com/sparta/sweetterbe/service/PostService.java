@@ -147,4 +147,10 @@ public class PostService {
         Optional<Post> optionalPost_review = postRepository.findById(id);
         return optionalPost_review.orElse(null);
     }
+
+    @Transactional
+    public List<PostResponseDto> getPostsByQueryCondition() {
+        return postRepository.findAllByBookMarkSet();
+    }
+
 }

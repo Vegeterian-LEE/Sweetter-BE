@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +38,7 @@ public class BookMarkService {
                 () -> new EntityNotFoundException("게시글이 없습니다")
         );
 
-        //Optional 형식이지만 뒤에 .orElse(null); 추가하면 <>안의 타입으로 바뀌는 듯
+        //Optional 형식이지만 뒤에 .orElse(null); 추가하면 <>안의 타입으로 바뀜
         BookMark bookMark = bookMarkRepository.findByUserAndPost(user,post).orElse(null);
         if (bookMark == null) {
             bookMarkRepository.save(new BookMark(user,post));
