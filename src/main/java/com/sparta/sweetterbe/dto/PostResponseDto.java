@@ -15,6 +15,8 @@ public class PostResponseDto {
     private String imageUrl2;
     private String imageUrl3;
     private String imageUrl4;
+    private int commentCount;
+    private int retweetCount;
     private int likeCount;
     private LocalDateTime createdAt;
 
@@ -27,6 +29,8 @@ public class PostResponseDto {
         this.imageUrl2 = post.getImage2();
         this.imageUrl3 = post.getImage3();
         this.imageUrl4 = post.getImage4();
+        this.commentCount = post.getComments().size();
+        this.retweetCount = post.getRetweets().size();
         this.likeCount = post.getLikes().size();
         this.userId = post.getUser().getUserId();
         this.username = post.getUser().getUsername();

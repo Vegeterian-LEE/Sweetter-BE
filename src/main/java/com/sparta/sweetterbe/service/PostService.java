@@ -29,7 +29,6 @@ public class PostService {
     private final RetweetRepository retweetRepository;
     private final CommentRepository commentRepository;
 
-
     //지금 다 유저로 찾고 있는데 id값(숫자)로 찾아야하는것 아닐지 고민좀..
     public UserPageDto getUserPage(String userId, UserDetailsImpl userDetails) {
         User user = userRepository.findByUserId(userId).orElseThrow(
