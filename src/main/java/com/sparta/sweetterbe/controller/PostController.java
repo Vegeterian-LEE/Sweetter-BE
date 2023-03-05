@@ -4,7 +4,7 @@ import com.sparta.sweetterbe.dto.IsLikeResponseDto;
 import com.sparta.sweetterbe.dto.PostRequestDto;
 import com.sparta.sweetterbe.dto.PostResponseDto;
 import com.sparta.sweetterbe.dto.StatusResponseDto;
-
+import com.sparta.sweetterbe.dto.UserPageDto;
 import com.sparta.sweetterbe.security.UserDetailsImpl;
 import com.sparta.sweetterbe.service.PostService;
 import com.sparta.sweetterbe.service.S3UploadService;
@@ -33,10 +33,11 @@ public class PostController {
     }
 
     /*@GetMapping("/{userId}")
-    public StatusResponseDto<List<PostDto>> getUserPage(@PathVariable String userId,
-                                                    @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public StatusResponseDto<List<UserPageDto>> getUserPage(@PathVariable String userId,
+                                                            @AuthenticationPrincipal UserDetailsImpl userDetails){
         return StatusResponseDto.success(PostService.getUserPage(userId, userDetails));
     }*/
+
 
     //게시글 작성
     @PostMapping("/post")
@@ -55,6 +56,12 @@ public class PostController {
     public StatusResponseDto<?> reTweetAndUnreTweet(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.reTweetAndUnreTweet(postId, userDetails);
     }
+
+/*    @GetMapping("/userlist")
+    public StatusResponseDto<List<UserListDto>> getUserList(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return StatusResponseDto.success(PostService.getUserList(userDetails));
+    }*/
+
 
 
     //게시글 좋아요 기능

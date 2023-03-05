@@ -2,6 +2,7 @@ package com.sparta.sweetterbe.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ public class StatusResponseDto<T> {
     }
 
     public static <T> StatusResponseDto<T> success(T data){
-        return new StatusResponseDto<>(200, "success", data);
+        return new StatusResponseDto<>(HttpStatus.OK.value(), "success", data);
     }
 
     public static <T> StatusResponseDto<T> fail(int statusCode, T data){
