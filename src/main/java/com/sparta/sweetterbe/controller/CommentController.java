@@ -20,19 +20,19 @@ public class CommentController {
     private final CommentService commentService;
 
     // 댓글 작성
-    @PostMapping("/comment/{id}")
+    @PostMapping("/{id}")
     public StatusResponseDto<CommentResponseDto> createComment(@PathVariable Long id, String content, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return commentService.createComment(id, content, userDetails);
     }
 
     //댓글 삭제
-    @DeleteMapping("/comment/{id}")
+    @DeleteMapping("/{id}")
     public StatusResponseDto<String> deleteComment(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) throws AuthenticationException {
         return commentService.deleteComment(id, userDetails);
     }
 
     // 댓글 좋아요
-    @PostMapping("/comment/like/{id}")
+    @PostMapping("/like/{id}")
     public StatusResponseDto<IsLikeResponseDto> likeComment(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return commentService.likeComment(id, userDetails);
     }
