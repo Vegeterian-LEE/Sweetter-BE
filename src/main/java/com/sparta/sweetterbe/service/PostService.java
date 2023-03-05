@@ -51,16 +51,18 @@ public class PostService {
         //작성글 + 리트윗 글
         List<Post> retweetList = new ArrayList<>((Collection) retweetRepository.findAllByUserOrderByCreatedAtDesc(user).get().getPost()) ;
         List<Post> postList = postRepository.findAllByUserOrderByCreatedAtDesc(user);// 엔티티 모양이 달라서 같은 모양으로 맞춰줘야함.
-        List<PostResponseDto> tweetList = new ArrayList<>();
+        List<PostResponseDto> tweetLists = new ArrayList<>();
         for (Post post : postList) {
-            tweetList.add(new PostResponseDto(post));
+            tweetLists.add(new PostResponseDto(post));
         }
         for (Post post : retweetList){
-            tweetList.add(new PostResponseDto(post));
+            tweetLists.add(new PostResponseDto(post));
         }
 
-        // 중복 삭제처리 필요.. 아직 처리 못함
-        tweetList.sort(Comparator.comparing(LocalDateTime::new)); // 다 합쳐서 시간순 정렬 해야하는데 아직 얘는 잘 모르겠음
+        // 중복 삭제처리
+        tweetLists.sort(Comparator.comparing(LocalDateTime::new));
+        Set<PostResponseDto> responseDtoSet = new HashSet<>(tweetLists);
+        List<PostResponseDto> tweetList = new ArrayList<>(responseDtoSet);// 다 합쳐서 시간순 정렬 해야하는데 아직 얘는 잘 모르겠음
         //post가 아니라 댓글 갯수 / 좋아요 갯수 / 리트윗 갯수가 붙은 dto로 반환해야함
 
         //작성글, 리트윗글 내가 댓글 단 글까지
