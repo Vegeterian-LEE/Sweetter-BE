@@ -2,9 +2,12 @@ package com.sparta.sweetterbe.controller;
 
 import com.sparta.sweetterbe.dto.StatusResponseDto;
 
+import com.sparta.sweetterbe.dto.UserPageDto;
+import com.sparta.sweetterbe.security.UserDetailsImpl;
 import com.sparta.sweetterbe.service.PostService;
 import com.sparta.sweetterbe.service.S3UploadService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,9 +30,14 @@ public class PostController {
     }
 
     /*@GetMapping("/{userId}")
-    public StatusResponseDto<List<PostDto>> getUserPage(@PathVariable String userId,
-                                                    @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public StatusResponseDto<List<UserPageDto>> getUserPage(@PathVariable String userId,
+                                                            @AuthenticationPrincipal UserDetailsImpl userDetails){
         return StatusResponseDto.success(PostService.getUserPage(userId, userDetails));
+    }*/
+
+/*    @GetMapping("/userlist")
+    public StatusResponseDto<List<UserListDto>> getUserList(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return StatusResponseDto.success(PostService.getUserList(userDetails));
     }*/
 
 
