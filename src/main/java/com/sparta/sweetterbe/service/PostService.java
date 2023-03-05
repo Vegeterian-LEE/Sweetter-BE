@@ -29,6 +29,22 @@ public class PostService {
     private final RetweetRepository retweetRepository;
     private final CommentRepository commentRepository;
 
+    public HomePageDto getHome(UserDetailsImpl userDetails) {
+        List<Post> allPost= postRepository.findAll();
+        List<PostResponseDto> allPostResponse = new ArrayList<>();
+        for (Post post : allPost){
+        allPostResponse.add(new PostResponseDto(post));
+        }
+        List<PostResponseDto> followedPosts = new ArrayList<>();
+        for (Post post : allPost) {
+            for (int i=0; i<userDetails.getUser().getFollowings().size(); i++)
+        if (post.getUser().equals(userDetails.getUser().getFollowings().get(i))){
+            followedPosts.add(new PostResponseDto(post));
+        }
+        }
+        return new HomePageDto(allPostResponse, followedPosts);
+    }
+
     //지금 다 유저로 찾고 있는데 id값(숫자)로 찾아야하는것 아닐지 고민좀..
     public UserPageDto getUserPage(String userId, UserDetailsImpl userDetails) {
         User user = userRepository.findByUserId(userId).orElseThrow(
@@ -68,10 +84,10 @@ public class PostService {
     }
 
     //게시글 생성
-    public StatusResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, UserDetailsImpl userDetails) {
+    public PostResponseDto createPost(PostRequestDto requestDto, UserDetailsImpl userDetails) {
         Post post = new Post(requestDto, userDetails.getUser());
         postRepository.save(post);
-        return StatusResponseDto.success(new PostResponseDto(post));
+        return new PostResponseDto(post);
     }
 
     //게시글 삭제
