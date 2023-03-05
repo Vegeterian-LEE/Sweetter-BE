@@ -37,8 +37,8 @@ public class PostController {
 
     //게시글 작성
     @PostMapping("/post")
-    public StatusResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return postService.createPost(requestDto, userDetails);
+    public StatusResponseDto<PostResponseDto> createPost(@RequestBody PostRequestDto requestDto,@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return StatusResponseDto.success(postService.createPost(requestDto, userDetails));
     }
 
     //게시글 삭제
@@ -53,8 +53,8 @@ public class PostController {
         return postService.reTweetAndUnreTweet(postId, userDetails);
     }
     @GetMapping("/home")
-    public StatusResponseDto<HomePageDto> getUserPage(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return StatusResponseDto.success(postService.getHome(userDetails));
+    public HomePageDto getUserPage(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return postService.getHome(userDetails);
     }
 
     //게시글 좋아요 기능

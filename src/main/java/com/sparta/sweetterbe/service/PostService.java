@@ -30,7 +30,7 @@ public class PostService {
     private final CommentRepository commentRepository;
 
     public HomePageDto getHome(UserDetailsImpl userDetails) {
-        List<Post> allPost= postRepository.findAllOrderByCreatedAtDesc();
+        List<Post> allPost= postRepository.findAll();
         List<PostResponseDto> allPostResponse = new ArrayList<>();
         for (Post post : allPost){
         allPostResponse.add(new PostResponseDto(post));
@@ -84,10 +84,10 @@ public class PostService {
     }
 
     //게시글 생성
-    public StatusResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, UserDetailsImpl userDetails) {
+    public PostResponseDto createPost(PostRequestDto requestDto, UserDetailsImpl userDetails) {
         Post post = new Post(requestDto, userDetails.getUser());
         postRepository.save(post);
-        return StatusResponseDto.success(new PostResponseDto(post));
+        return new PostResponseDto(post);
     }
 
     //게시글 삭제
