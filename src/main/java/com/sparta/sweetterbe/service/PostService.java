@@ -88,9 +88,9 @@ public class PostService {
             }
         }
         MediaPostList.sort(Comparator.comparing(LocalDateTime::new));
-
-
         //이미지 없는걸로 선별 걸어서 다시
+
+
         //like한 게시글
         List<PostLike> likeList = postLikeRepository.findAllByUser(user);
         List<PostResponseDto> likePostList = new ArrayList<>();
