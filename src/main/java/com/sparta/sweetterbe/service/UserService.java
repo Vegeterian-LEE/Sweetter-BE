@@ -4,6 +4,7 @@ import com.sparta.sweetterbe.dto.*;
 import com.sparta.sweetterbe.entity.User;
 import com.sparta.sweetterbe.entity.UserRoleEnum;
 import com.sparta.sweetterbe.jwt.JwtUtil;
+import com.sparta.sweetterbe.repository.FollowRepository;
 import com.sparta.sweetterbe.repository.UserRepository;
 import com.sparta.sweetterbe.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,8 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +25,7 @@ import java.util.Optional;
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final FollowRepository followRepository;
     private final JwtUtil jwtUtil;
 
     @Transactional
@@ -86,5 +90,15 @@ public class UserService {
             throw new IllegalArgumentException("비밀 번호가 틀렸습니다.");
         }
         return "비밀번호가 일치합니다.";
+    }
+    @Transactional
+    public List<UserListDto> getUserList(UserDetailsImpl userDetails) {
+        List<User> users = userRepository.findAllByUserIdNot(userDetails.getUser().getUserId());
+        List<UserListDto> userList = new ArrayList<>();
+        for (int i=0; i< users.size(); i++){
+            boolean followed = !followRepository.findAllByFollowingAndFollower(users.get(i),userDetails.getUser()).isEmpty();
+            userList.add(new UserListDto(users.get(i), followed));
+        }
+        return userList;
     }
 }

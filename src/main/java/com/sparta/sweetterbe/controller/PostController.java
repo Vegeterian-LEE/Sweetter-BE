@@ -35,12 +35,6 @@ public class PostController {
         return StatusResponseDto.success(PostService.getUserPage(userId, userDetails));
     }*/
 
-    @GetMapping("/userlist")
-    public StatusResponseDto<List<UserListDto>> getUserList(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return StatusResponseDto.success(postService.getUserList(userDetails));
-    }
-
-
     //게시글 작성
     @PostMapping("/post")
     public StatusResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {

@@ -28,19 +28,6 @@ public class PostService {
     private final UserRepository userRepository;
     private final RetweetRepository retweetRepository;
     private final CommentRepository commentRepository;
-    private final FollowRepository followRepository;
-
-   public List<UserListDto> getUserList(UserDetailsImpl userDetails) {
-        List<User> users = userRepository.findAllByUserIdNot(userDetails.getUser().getUserId());
-        if (users.isEmpty())
-        {return null;}
-        List<UserListDto> userList = new ArrayList<>();
-        for (int i=0; i< users.size(); i++){
-            boolean followed = !followRepository.findAllByFollowingAndFollower(users.get(i),userDetails.getUser()).isEmpty();
-            userList.add(new UserListDto(users.get(i), followed));
-        }
-        return userList;
-    }
 
     //지금 다 유저로 찾고 있는데 id값(숫자)로 찾아야하는것 아닐지 고민좀..
     public UserPageDto getUserPage(String userId, UserDetailsImpl userDetails) {

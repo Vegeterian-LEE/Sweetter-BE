@@ -2,7 +2,13 @@ package com.sparta.sweetterbe.dto;
 
 import com.sparta.sweetterbe.entity.User;
 import com.sparta.sweetterbe.repository.FollowRepository;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class UserListDto {
     private String UserId;
     private String username;
