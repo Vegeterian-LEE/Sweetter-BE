@@ -30,7 +30,7 @@ public class PostController {
         return StatusResponseDto.success(s3UploadService.uploadFiles(multipartFiles, "sweetter"));
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("")
     public StatusResponseDto<UserPageDto> getUserPage(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return StatusResponseDto.success(postService.getUserPage(userDetails));
     }
@@ -53,7 +53,7 @@ public class PostController {
         return postService.reTweetAndUnreTweet(postId, userDetails);
     }
     @GetMapping("/home")
-    public HomePageDto getUserPage(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public HomePageDto getHome(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
         return postService.getHome(userDetails);
     }
 

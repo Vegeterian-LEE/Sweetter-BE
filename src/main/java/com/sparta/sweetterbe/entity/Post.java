@@ -52,10 +52,7 @@ public class Post extends TimeStamped {
     @Builder
     public Post(PostRequestDto requestDto, User user){
         this.content = requestDto.getContent();
-        this.image1 = requestDto.getImageUrl1();
-        this.image2 = requestDto.getImageUrl2();
-        this.image3 = requestDto.getImageUrl3();
-        this.image4 = requestDto.getImageUrl4();
+        this.imageUrls = requestDto.getImageUrls();
         this.user = user;
     }
 }
