@@ -1,13 +1,10 @@
 package com.sparta.sweetterbe.controller;
 
-import com.sparta.sweetterbe.dto.IsLikeResponseDto;
-import com.sparta.sweetterbe.dto.PostRequestDto;
-import com.sparta.sweetterbe.dto.PostResponseDto;
-import com.sparta.sweetterbe.dto.StatusResponseDto;
-import com.sparta.sweetterbe.dto.UserPageDto;
+import com.sparta.sweetterbe.dto.*;
 import com.sparta.sweetterbe.security.UserDetailsImpl;
 import com.sparta.sweetterbe.service.PostService;
 import com.sparta.sweetterbe.service.S3UploadService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +34,11 @@ public class PostController {
                                                             @AuthenticationPrincipal UserDetailsImpl userDetails){
         return StatusResponseDto.success(PostService.getUserPage(userId, userDetails));
     }*/
+
+    @GetMapping("/userlist")
+    public StatusResponseDto<List<UserListDto>> getUserList(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return StatusResponseDto.success(postService.getUserList(userDetails));
+    }
 
 
     //게시글 작성
