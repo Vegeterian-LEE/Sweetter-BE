@@ -8,12 +8,12 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class UserPageDto {
-    private List<Post> tweetList;
-    private List<Post> tweetAndReplyList;
-    private List<Post> mediaPostList;
-    private List<Post> likePostList;
+    private List<PostResponseDto> tweetList;
+    private List<PostResponseDto> tweetAndReplyList;
+    private List<PostResponseDto> mediaPostList;
+    private List<PostResponseDto> likePostList;
 
-    public UserPageDto(List<Post> tweetList, List<Post> tweetAndReplyList, List<Post> mediaPostList, List<Post> likePostList) {
+    public UserPageDto(List<PostResponseDto> tweetList, List<PostResponseDto> tweetAndReplyList, List<PostResponseDto> mediaPostList, List<PostResponseDto> likePostList) {
         this.tweetList = tweetList;
         this.tweetAndReplyList = tweetAndReplyList;
         this.mediaPostList = mediaPostList;

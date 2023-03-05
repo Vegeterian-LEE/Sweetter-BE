@@ -32,11 +32,10 @@ public class PostController {
         return StatusResponseDto.success(s3UploadService.uploadFiles(multipartFiles, "sweetter"));
     }
 
-    /*@GetMapping("/{userId}")
-    public StatusResponseDto<List<UserPageDto>> getUserPage(@PathVariable String userId,
-                                                            @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return StatusResponseDto.success(PostService.getUserPage(userId, userDetails));
-    }*/
+    @GetMapping("/{userId}")
+    public StatusResponseDto<UserPageDto> getUserPage(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return StatusResponseDto.success(postService.getUserPage(userDetails));
+    }
 
 
     //게시글 작성
@@ -65,8 +64,8 @@ public class PostController {
 
 
     //게시글 좋아요 기능
-//    @PostMapping("/post/like/{postId}")
-//    public StatusResponseDto<IsLikeResponseDto> likePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        return postService.likePost(postId, userDetails);
-//    }
+    @PostMapping("/post/like/{postId}")
+    public StatusResponseDto<IsLikeResponseDto> likePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.likePost(postId, userDetails);
+    }
 }
