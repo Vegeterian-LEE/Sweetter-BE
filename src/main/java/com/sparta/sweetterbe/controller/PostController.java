@@ -52,7 +52,10 @@ public class PostController {
     public StatusResponseDto<?> reTweetAndUnreTweet(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.reTweetAndUnreTweet(postId, userDetails);
     }
-
+    @GetMapping("/home")
+    public StatusResponseDto<HomePageDto> getUserPage(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return StatusResponseDto.success(postService.getHome(userDetails));
+    }
 
     //게시글 좋아요 기능
 //    @PostMapping("/post/like/{postId}")
