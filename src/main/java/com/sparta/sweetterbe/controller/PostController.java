@@ -57,12 +57,6 @@ public class PostController {
         return postService.reTweetAndUnreTweet(postId, userDetails);
     }
 
-/*    @GetMapping("/userlist")
-    public StatusResponseDto<List<UserListDto>> getUserList(@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return StatusResponseDto.success(PostService.getUserList(userDetails));
-    }*/
-
-
 
     //게시글 좋아요 기능
 //    @PostMapping("/post/like/{postId}")
