@@ -2,9 +2,12 @@ package com.sparta.sweetterbe.dto;
 
 import com.sparta.sweetterbe.entity.Post;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
-
+@Getter
+@Setter
 public class PostResponseDto {
 
     private Long id;

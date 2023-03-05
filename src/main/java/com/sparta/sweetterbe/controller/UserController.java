@@ -40,7 +40,7 @@ public class UserController {
         return StatusResponseDto.success(userService.updateProfile(userRequestDto, userDetails));
     }
 
-    @GetMapping("/getlist")
+    @GetMapping("/list")
     public StatusResponseDto<List<UserListDto>> getUserList(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
         return StatusResponseDto.success(userService.getUserList(userDetails));
     }
