@@ -30,7 +30,9 @@ public class User extends TimeStamped{
     @Column(nullable = false, unique = true)
     private String email;
     @Column
-    private String image;
+    private String profileImage;
+    @Column
+    private String backgroundImage;
     @Column
     private String introduction;
 
@@ -59,7 +61,8 @@ public class User extends TimeStamped{
     }
 
     public void update(UserRequestDto userRequestDto) {
-        this.image = userRequestDto.getImage();
+        this.profileImage = userRequestDto.getProfileImage();
+        this.backgroundImage = userRequestDto.getBackgroundImage();
         this.introduction = userRequestDto.getIntroduction();
         this.username = userRequestDto.getUsername();
         this.email = userRequestDto.getEmail();
