@@ -1,14 +1,12 @@
 package com.sparta.sweetterbe.controller;
 
-import com.sparta.sweetterbe.dto.IsLikeResponseDto;
-import com.sparta.sweetterbe.dto.PostRequestDto;
-import com.sparta.sweetterbe.dto.PostResponseDto;
-import com.sparta.sweetterbe.dto.StatusResponseDto;
-import com.sparta.sweetterbe.dto.UserPageDto;
+import com.sparta.sweetterbe.dto.*;
 import com.sparta.sweetterbe.security.UserDetailsImpl;
 import com.sparta.sweetterbe.service.PostService;
 import com.sparta.sweetterbe.service.S3UploadService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,11 +35,10 @@ public class PostController {
         return StatusResponseDto.success(postService.getUserPage(userDetails));
     }
 
-
     //게시글 작성
     @PostMapping("/post")
-    public StatusResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return postService.createPost(requestDto, userDetails);
+    public StatusResponseDto<PostResponseDto> createPost(@RequestBody PostRequestDto requestDto,@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return StatusResponseDto.success(postService.createPost(requestDto, userDetails));
     }
 
     //게시글 삭제
@@ -55,13 +52,15 @@ public class PostController {
     public StatusResponseDto<?> reTweetAndUnreTweet(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.reTweetAndUnreTweet(postId, userDetails);
     }
+    @GetMapping("/home")
+    public HomePageDto getUserPage(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return postService.getHome(userDetails);
+    }
 
-/*    @GetMapping("/userlist")
-    public StatusResponseDto<List<UserListDto>> getUserList(@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return StatusResponseDto.success(PostService.getUserList(userDetails));
-    }*/
-
-
+    @GetMapping("/BookMarkes")
+    public StatusResponseDto<List<PostResponseDto>> getPostByBookMark() {
+        return StatusResponseDto.success(postService.getPostsByQueryCondition());
+    }
 
     //게시글 좋아요 기능
     @PostMapping("/post/like/{postId}")

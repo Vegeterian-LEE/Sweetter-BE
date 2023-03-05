@@ -16,29 +16,29 @@ import java.nio.file.AccessDeniedException;
 public class FollowController {
     private final FollowService followService;
 
-    @PostMapping("/{postId}")
+    @PostMapping("/{followUsername}")
     public StatusResponseDto<FollowResponseDto> makeFollow(
-            @PathVariable Long postId,
+            @PathVariable String followUsername,
             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        return StatusResponseDto.success(followService.makeFollow(postId, userDetails));
+    ) throws AccessDeniedException {
+        return StatusResponseDto.success(followService.makeFollow(followUsername, userDetails));
     }
 
-    @PutMapping("/approve/{postId}")
+    @PutMapping("/approve/{followerUsername}")
     public StatusResponseDto<FollowResponseDto> approveFollow(
-            @PathVariable Long postId,
+            @PathVariable String followerUsername,
             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws AccessDeniedException {
-        followService.approveFollow(postId, userDetails);
-        return StatusResponseDto.success(followService.makeFollow(postId, userDetails));
+        followService.approveFollow(followerUsername, userDetails);
+        return StatusResponseDto.success(followService.makeFollow(followerUsername, userDetails));
     }
 
-    @DeleteMapping("/deny/{postId}")
+    @DeleteMapping("/deny/{followerUsername}")
     public StatusResponseDto<String> denyFollow(
-            @PathVariable Long postId,
+            @PathVariable String followerUsername,
             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws AccessDeniedException {
-        followService.denyFollow(postId, userDetails);
+        followService.denyFollow(followerUsername, userDetails);
         return StatusResponseDto.success("삭제 성공");
     }
 

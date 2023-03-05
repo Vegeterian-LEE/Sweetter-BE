@@ -44,6 +44,10 @@ public class Post extends TimeStamped {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     List<PostLike> likes = new ArrayList<>();
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    List<Retweet> retweets = new ArrayList<>();
 
     @Builder
     public Post(PostRequestDto requestDto, User user){

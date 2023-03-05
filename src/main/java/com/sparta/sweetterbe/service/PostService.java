@@ -102,10 +102,10 @@ public class PostService {
     }
 
     //게시글 생성
-    public StatusResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, UserDetailsImpl userDetails) {
+    public PostResponseDto createPost(PostRequestDto requestDto, UserDetailsImpl userDetails) {
         Post post = new Post(requestDto, userDetails.getUser());
         postRepository.save(post);
-        return StatusResponseDto.success(new PostResponseDto(post));
+        return new PostResponseDto(post);
     }
 
     //게시글 삭제

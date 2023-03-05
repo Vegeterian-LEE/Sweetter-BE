@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,4 +39,11 @@ public class UserController {
                                                             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return StatusResponseDto.success(userService.updateProfile(userRequestDto, userDetails));
     }
+
+    @GetMapping("/list")
+    public StatusResponseDto<List<UserListDto>> getUserList(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return StatusResponseDto.success(userService.getUserList(userDetails));
+    }
+
+
 }

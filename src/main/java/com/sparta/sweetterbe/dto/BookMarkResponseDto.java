@@ -1,5 +1,14 @@
 package com.sparta.sweetterbe.dto;
 
+
+import com.sparta.sweetterbe.entity.Post;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class BookMarkResponseDto {
     private boolean isWished;
 
