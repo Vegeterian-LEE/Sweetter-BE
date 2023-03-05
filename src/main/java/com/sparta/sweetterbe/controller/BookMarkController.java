@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookMarkController {
     private final BookMarkService bookMarkService;
     @PostMapping("/toggle/{postId}")
-    public StatusResponseDto<BookMarkResponseDto> toggleWish(
+    public StatusResponseDto<BookMarkResponseDto> toggleMark(
             @PathVariable Long postId,
             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {

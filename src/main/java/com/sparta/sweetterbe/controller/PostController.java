@@ -58,7 +58,7 @@ public class PostController {
         return postService.getHome(userDetails);
     }
 
-    @GetMapping("/hottest")
+    @GetMapping("/BookMarkes")
     public StatusResponseDto<List<PostResponseDto>> getPostByBookMark() {
         return StatusResponseDto.success(postService.getPostsByQueryCondition());
     }
