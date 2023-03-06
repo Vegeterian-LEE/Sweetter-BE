@@ -35,11 +35,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - uses: actions/checkout@v3
-      - run: touch ./src/main/resources/application.properties
-      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
-      - run: cat ./src/main/resources/application.properties
-
       # (2.5) gradle init
       - name: init with Gradle
         uses: gradle/gradle-build-action@v2
@@ -48,6 +43,15 @@ jobs:
       - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
 
+      ## create application.properties
+      - name: make application.properties
+        run:
+          touch ./src/main/resources/application.properties
+        shell: bash
+
+      - name: deliver application.properties
+        run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
+        shell: bash
 
       # (3) Gradle build (Test 제외)
       - name: Build with Gradle
