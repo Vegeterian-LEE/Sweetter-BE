@@ -112,7 +112,7 @@ public class FollowService {
                 ()-> new EntityNotFoundException("해당 유저의 팔로우 신청을 확인할 수 없습니다")
         );
         follow.approve();
-        return FollowResponseDto.of(new Follow(follower,following));
+        return FollowResponseDto.of(follow);
     }
 
     @Transactional

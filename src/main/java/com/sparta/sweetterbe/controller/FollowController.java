@@ -16,7 +16,7 @@ import java.nio.file.AccessDeniedException;
 public class FollowController {
     private final FollowService followService;
 
-    @PostMapping("/{followUsername}")
+    @PostMapping("/{followerUsername}")
     public StatusResponseDto<FollowResponseDto> makeFollow(
             @PathVariable String followerUsername,
             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -24,7 +24,7 @@ public class FollowController {
         return StatusResponseDto.success(followService.makeFollow(followerUsername, userDetails));
     }
 
-    @DeleteMapping ("/{followUsername}")
+    @DeleteMapping ("/{followerUsername}")
     public StatusResponseDto<String> deleteFollow(
             @PathVariable String followerUsername,
             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails
