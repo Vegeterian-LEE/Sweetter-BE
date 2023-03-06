@@ -8,6 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RetweetRepository extends JpaRepository<Retweet, Long> {
-    Optional<Retweet> findAllByUserOrderByCreatedAtDesc(User user);
+    List<Retweet> findAllByUserOrderByCreatedAtDesc(User user);
     List<Retweet> findAllByUserIdAndPostId(Long userId, Long postId);
 }

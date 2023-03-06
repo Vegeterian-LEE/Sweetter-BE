@@ -1,6 +1,6 @@
 package com.sparta.sweetterbe.dto;
 
-import com.sparta.sweetterbe.entity.Post;
+import com.sparta.sweetterbe.entity.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +26,23 @@ public class PostResponseDto {
     private int retweetCount;
     private int likeCount;
     private LocalDateTime createdAt;
+    private Boolean retweetCheck;
+    private Boolean likeCheck;
+    private Boolean commentCheck;
 
+    @Builder
+    public PostResponseDto(Post post, Retweet retweet){
+        this.id = post.getId();
+        this.content = post.getContent();
+        this.imageUrls = post.getImageUrls();
+        this.commentCount = post.getComments().size();
+        this.retweetCount = post.getRetweets().size();
+        this.retweetCheck = retweet.getUser().getUserId().equals(post.getUser().getUserId());
+        this.likeCount = post.getLikes().size();
+        this.userId = post.getUser().getUserId();
+        this.username = post.getUser().getUsername();
+        this.createdAt = post.getCreatedAt();
+    }
 
     @Builder
     public PostResponseDto(Post post){
@@ -35,6 +51,20 @@ public class PostResponseDto {
         this.imageUrls = post.getImageUrls();
         this.commentCount = post.getComments().size();
         this.retweetCount = post.getRetweets().size();
+        this.likeCount = post.getLikes().size();
+        this.userId = post.getUser().getUserId();
+        this.username = post.getUser().getUsername();
+        this.createdAt = post.getCreatedAt();
+    }
+
+    @Builder
+    public PostResponseDto(Post post, Comment comment){
+        this.id = post.getId();
+        this.content = post.getContent();
+        this.imageUrls = post.getImageUrls();
+        this.commentCount = post.getComments().size();
+        this.retweetCount = post.getRetweets().size();
+        this.commentCheck = comment.getUser().getUserId().equals(post.getUser().getUserId());
         this.likeCount = post.getLikes().size();
         this.userId = post.getUser().getUserId();
         this.username = post.getUser().getUsername();

@@ -50,16 +50,15 @@ public class PostService {
         );
         // 각 포스트에 댓글 갯수 / 좋아요 갯수 / 리트윗 갯수 붙어서 나가야함
         //작성글 + 리트윗 글
-        List<Post> retweetList = new ArrayList<>((Collection) retweetRepository.findAllByUserOrderByCreatedAtDesc(user).get().getPost()) ;
+        List<Retweet> retweetList = retweetRepository.findAllByUserOrderByCreatedAtDesc(user);
         List<Post> postList = postRepository.findAllByUserOrderByCreatedAtDesc(user);// 엔티티 모양이 달라서 같은 모양으로 맞춰줘야함.
         List<PostResponseDto> tweetList = new ArrayList<>();
-        for (Post post : postList) {
-            tweetList.add(new PostResponseDto(post));
+        for (int i = 0; i< retweetList.size(); i++){
+            tweetList.add(new PostResponseDto(retweetList.get(i).getPost(), retweetList.get(i)));
         }
-        for (Post post : retweetList){
-            tweetList.add(new PostResponseDto(post));
+        for (int i = 0; i < postList.size(); i++) {
+            tweetList.add(new PostResponseDto(postList.get(i)));
         }
-
         // 중복 삭제처리
         tweetList.sort(Comparator.comparing(LocalDateTime::new));
         tweetList = tweetList.stream().distinct().collect(Collectors.toList());
@@ -71,7 +70,7 @@ public class PostService {
         List<Comment> commentList = commentRepository.findAllByUserOrderByCreatedAtDesc(user);
         List<PostResponseDto> tweetAndReplyList = tweetList;
         for (int i = 0; i < commentList.size(); i++) {
-            tweetAndReplyList.add(new PostResponseDto(commentList.get(i).getPost()));
+            tweetAndReplyList.add(new PostResponseDto(commentList.get(i).getPost(), commentList.get(i)));
         }
         // 중복 삭제처리 필요
         tweetAndReplyList.sort(Comparator.comparing(LocalDateTime::new));
