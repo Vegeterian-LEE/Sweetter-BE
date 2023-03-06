@@ -30,19 +30,6 @@ public class PostResponseDto {
     private Boolean likeCheck;
     private Boolean commentCheck;
 
-    @Builder
-    public PostResponseDto(Post post, Retweet retweet){
-        this.id = post.getId();
-        this.content = post.getContent();
-        this.imageUrls = post.getImageUrls();
-        this.commentCount = post.getComments().size();
-        this.retweetCount = post.getRetweets().size();
-        this.retweetCheck = retweet.getUser().getUserId().equals(post.getUser().getUserId());
-        this.likeCount = post.getLikes().size();
-        this.userId = post.getUser().getUserId();
-        this.username = post.getUser().getUsername();
-        this.createdAt = post.getCreatedAt();
-    }
 
     @Builder
     public PostResponseDto(Post post){
@@ -55,17 +42,21 @@ public class PostResponseDto {
         this.userId = post.getUser().getUserId();
         this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();
+        this.commentCheck = false;
+        this.retweetCheck = false;
     }
 
+
     @Builder
-    public PostResponseDto(Post post, Comment comment){
+    public PostResponseDto(Post post, boolean commentCheck, boolean retweetCheck){
         this.id = post.getId();
         this.content = post.getContent();
         this.imageUrls = post.getImageUrls();
         this.commentCount = post.getComments().size();
         this.retweetCount = post.getRetweets().size();
-        this.commentCheck = comment.getUser().getUserId().equals(post.getUser().getUserId());
         this.likeCount = post.getLikes().size();
+        this.commentCheck = commentCheck;
+        this.retweetCheck = retweetCheck;
         this.userId = post.getUser().getUserId();
         this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();

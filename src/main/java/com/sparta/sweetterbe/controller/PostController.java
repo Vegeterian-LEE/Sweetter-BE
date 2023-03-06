@@ -6,6 +6,7 @@ import com.sparta.sweetterbe.service.PostService;
 import com.sparta.sweetterbe.service.S3UploadService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +32,9 @@ public class PostController {
     }
 
  // 프로필에 들어가는 post리스트 호출 기능
-    @GetMapping("/postInMypage")
-    public StatusResponseDto<UserPageDto> getUserPage(@Parameter(hidden = true)@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return StatusResponseDto.success(postService.getUserPage(userDetails));
+    @GetMapping("/post/{userId}")
+    public StatusResponseDto<UserPageDto> getUserPage(@PathVariable Long userId, @Parameter(hidden = true)@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return StatusResponseDto.success(postService.getUserPage(userId, userDetails));
     }
 
     //게시글 작성
