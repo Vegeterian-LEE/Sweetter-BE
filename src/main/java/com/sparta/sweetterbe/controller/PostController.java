@@ -30,6 +30,7 @@ public class PostController {
         return StatusResponseDto.success(s3UploadService.uploadFiles(multipartFiles, "sweetter"));
     }
 
+ // 프로필에 들어가는 post리스트 호출 기능
     @GetMapping("/postInMypage")
     public StatusResponseDto<UserPageDto> getUserPage(@Parameter(hidden = true)@AuthenticationPrincipal UserDetailsImpl userDetails){
         return StatusResponseDto.success(postService.getUserPage(userDetails));
@@ -49,14 +50,18 @@ public class PostController {
 
     //리트윗 기능
     @PostMapping("/retweet/{postId}")
-    public StatusResponseDto<?> reTweetAndUnreTweet(@PathVariable Long postId,@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto<?> reTweetAndUnreTweet(@PathVariable Long postId,
+                                                    @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.reTweetAndUnreTweet(postId, userDetails);
     }
+
+    //메인 홈 페이지 post들 호출 기능
     @GetMapping("/home")
     public HomePageDto getHome(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
         return postService.getHome(userDetails);
     }
 
+    // 북 마크 기능
     @GetMapping("/BookMarkes")
     public StatusResponseDto<List<PostResponseDto>> getPostByBookMark() {
         return StatusResponseDto.success(postService.getPostsByQueryCondition());
@@ -64,7 +69,8 @@ public class PostController {
 
     //게시글 좋아요 기능
     @PostMapping("/post/like/{postId}")
-    public StatusResponseDto<IsLikeResponseDto> likePost(@PathVariable Long postId,@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto<IsLikeResponseDto> likePost(@PathVariable Long postId,
+                                                         @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.likePost(postId, userDetails);
     }
 }

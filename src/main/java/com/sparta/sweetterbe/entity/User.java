@@ -38,7 +38,7 @@ public class User extends TimeStamped{
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private UserRoleEnum role;
+    private UserRoleEnum role = UserRoleEnum.USER;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "follower")
     @JsonIgnore
@@ -57,7 +57,6 @@ public class User extends TimeStamped{
         this.password = password;
         this.username = username;
         this.email = email;
-        this.role = role;
     }
 
     public void update(UserRequestDto userRequestDto) {
