@@ -30,7 +30,7 @@ public class FollowController {
             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws AccessDeniedException {
         followService.approveFollow(followerUsername, userDetails);
-        return StatusResponseDto.success(followService.makeFollow(followerUsername, userDetails));
+        return StatusResponseDto.success(followService.approveFollow(followerUsername, userDetails));
     }
 
     @DeleteMapping("/deny/{followerUsername}")

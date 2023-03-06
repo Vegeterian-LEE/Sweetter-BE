@@ -26,6 +26,8 @@ public class PostService {
     private final UserRepository userRepository;
     private final RetweetRepository retweetRepository;
     private final CommentRepository commentRepository;
+    private final FollowRepository followRepository;
+
     //각 Post에 내가 좋아요 리트윗 했는지
     public HomePageDto getHome(UserDetailsImpl userDetails) {
         User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
@@ -38,10 +40,12 @@ public class PostService {
             boolean likeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
             allPostResponse.add(new PostResponseDto(post, retweetCheck, likeCheck));
         }
+        // 팔로우 한 유저의 게시글만 조회
         List<PostResponseDto> followedPostResponse = new ArrayList<>();
+        List<Follow> followList= followRepository.findAllByFollowing_IdAndIsAccepted(user.getId(),true);
         for (Post post : allPost) {
-            for (int i=0; i<user.getFollowings().size(); i++){
-        if (Objects.equals(post.getUser(), user.getFollowings().get(i))){
+            for (int i=0; i<followList.size(); i++){
+        if (followList.get(i).getFollower().getId()==post.getUser().getId()){
             boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
             boolean likeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
             followedPostResponse.add(new PostResponseDto(post, retweetCheck, likeCheck));}
@@ -108,7 +112,10 @@ public class PostService {
 
     //게시글 생성
     public PostResponseDto createPost(PostRequestDto requestDto, UserDetailsImpl userDetails) {
-        Post post = new Post(requestDto, userDetails.getUser());
+        User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
+                () -> new EntityNotFoundException("회원을 찾지 못했습니다.")
+        );
+        Post post = new Post(requestDto, user);
         postRepository.save(post);
         return new PostResponseDto(post);
     }
