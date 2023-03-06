@@ -6,6 +6,7 @@ import com.sparta.sweetterbe.service.PostService;
 import com.sparta.sweetterbe.service.S3UploadService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +29,6 @@ public class PostController {
     @PostMapping(consumes = "multipart/form-data", value="/upload")
     public StatusResponseDto<List<String>> uploadImage(@RequestParam(value = "image") List<MultipartFile> multipartFiles) throws IOException {
         return StatusResponseDto.success(s3UploadService.uploadFiles(multipartFiles, "sweetter"));
-    }
-
- // 프로필에 들어가는 post리스트 호출 기능
-    @GetMapping("/postInMypage")
-    public StatusResponseDto<UserPageDto> getUserPage(@Parameter(hidden = true)@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return StatusResponseDto.success(postService.getUserPage(userDetails));
     }
 
     //게시글 작성

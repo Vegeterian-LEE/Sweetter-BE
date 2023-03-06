@@ -3,9 +3,11 @@ package com.sparta.sweetterbe.dto;
 import com.sparta.sweetterbe.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 @Getter
+@Setter
 @NoArgsConstructor
 public class UserPageDto {
     private List<PostResponseDto> tweetList;

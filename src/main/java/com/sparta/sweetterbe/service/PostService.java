@@ -54,66 +54,12 @@ public class PostService {
         return new HomePageDto(allPostResponse, followedPostResponse);
     }
 
-    //지금 다 유저로 찾고 있는데 id값(숫자)로 찾아야하는것 아닐지 고민좀..
-    public UserPageDto getUserPage(UserDetailsImpl userDetails) {
-        User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
-                () -> new EntityNotFoundException("회원을 찾지 못했습니다.")
-        );
-        // 각 포스트에 댓글 갯수 / 좋아요 갯수 / 리트윗 갯수 붙어서 나가야함
-        //작성글 + 리트윗 글
-        List<Retweet> retweetList = retweetRepository.findAllByUserOrderByCreatedAtDesc(user);
-        List<Post> postList = postRepository.findAllByUserOrderByCreatedAtDesc(user);// 엔티티 모양이 달라서 같은 모양으로 맞춰줘야함.
-        List<PostResponseDto> tweetList = new ArrayList<>();
-        for (int i = 0; i< retweetList.size(); i++){
-            tweetList.add(new PostResponseDto(retweetList.get(i).getPost(), retweetList.get(i)));
-        }
-        for (int i = 0; i < postList.size(); i++) {
-            tweetList.add(new PostResponseDto(postList.get(i)));
-        }
-        // 중복 삭제처리
-        tweetList.sort(Comparator.comparing(LocalDateTime::new));
-        tweetList = tweetList.stream().distinct().collect(Collectors.toList());
-//        Set<PostResponseDto> responseDtoSet = new HashSet<>(tweetLists);
-//        List<PostResponseDto> tweetList = new ArrayList<>(responseDtoSet);// 다 합쳐서 시간순 정렬 해야하는데 아직 얘는 잘 모르겠음
-        //post가 아니라 댓글 갯수 / 좋아요 갯수 / 리트윗 갯수가 붙은 dto로 반환해야함
-
-        //작성글, 리트윗글 내가 댓글 단 글까지
-        List<Comment> commentList = commentRepository.findAllByUserOrderByCreatedAtDesc(user);
-        List<PostResponseDto> tweetAndReplyList = tweetList;
-        for (int i = 0; i < commentList.size(); i++) {
-            tweetAndReplyList.add(new PostResponseDto(commentList.get(i).getPost(), commentList.get(i)));
-        }
-        // 중복 삭제처리 필요
-        tweetAndReplyList.sort(Comparator.comparing(LocalDateTime::new));
-        tweetAndReplyList = tweetAndReplyList.stream().distinct().collect(Collectors.toList());// 다 합쳐서 시간순 정렬 해야하는데 아직 얘는 잘 모르겠음
-
-        //media가 있는 게시글
-        List<Post> MediaList = postRepository.findAllByIdOrderByCreatedAtDesc(user.getId());
-        List<PostResponseDto> MediaPostList = new ArrayList<>();
-        for (int i = 0; i < MediaList.size(); i++){
-            if(MediaList.get(i).getImageUrls() == null){
-                MediaList.remove(i);
-            }else {
-                MediaPostList.add(new PostResponseDto(MediaList.get(i)));
-            }
-        }
-        MediaPostList.sort(Comparator.comparing(LocalDateTime::new));
-        //이미지 없는걸로 선별 걸어서 다시
-        //like한 게시글
-        List<PostLike> likeList = postLikeRepository.findAllByUser(user);
-        List<PostResponseDto> likePostList = new ArrayList<>();
-        for (int i = 0; i < likeList.size(); i++){
-            likePostList.add(new PostResponseDto(likeList.get(i).getPost()));
-        }
-
-        return new UserPageDto(tweetList, tweetAndReplyList, MediaPostList, likePostList);
-    }
-
     //게시글 생성
     public PostResponseDto createPost(PostRequestDto requestDto, UserDetailsImpl userDetails) {
         User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
                 () -> new EntityNotFoundException("회원을 찾지 못했습니다.")
         );
+        
         Post post = new Post(requestDto, user);
         postRepository.save(post);
         return new PostResponseDto(post);
@@ -126,7 +72,7 @@ public class PostService {
                 () -> new EntityNotFoundException("해당 게시글을 찾지 못합니다.")
         );
 
-        if (user.getRole() == UserRoleEnum.ADMIN || user.getUserId().equals(post.getUser().getUsername())) {
+        if (user.getRole() == UserRoleEnum.ADMIN || user.getUserId().equals(post.getUser().getUserId())) {
             postRepository.deleteById(postId);
         } else {
             throw new AuthenticationException("작성자만 삭제가 가능합니다.");
@@ -183,3 +129,4 @@ public class PostService {
     }
 
 }
+
