@@ -48,28 +48,14 @@ public class PostResponseDto {
 
 
     @Builder
-    public PostResponseDto(Post post, boolean commentCheck, boolean retweetCheck){
+    public PostResponseDto(Post post, boolean likeCheck, boolean retweetCheck){
         this.id = post.getId();
         this.content = post.getContent();
         this.imageUrls = post.getImageUrls();
         this.commentCount = post.getComments().size();
         this.retweetCount = post.getRetweets().size();
         this.likeCount = post.getLikes().size();
-        this.commentCheck = commentCheck;
-        this.retweetCheck = retweetCheck;
-        this.userId = post.getUser().getUserId();
-        this.username = post.getUser().getUsername();
-        this.createdAt = post.getCreatedAt();
-    }
-    @Builder
-    public PostResponseDto(Post post, boolean commentCheck, boolean retweetCheck){
-        this.id = post.getId();
-        this.content = post.getContent();
-        this.imageUrls = post.getImageUrls();
-        this.commentCount = post.getComments().size();
-        this.retweetCount = post.getRetweets().size();
-        this.likeCount = post.getLikes().size();
-        this.commentCheck = commentCheck;
+        this.likeCheck = likeCheck;
         this.retweetCheck = retweetCheck;
         this.userId = post.getUser().getUserId();
         this.username = post.getUser().getUsername();
