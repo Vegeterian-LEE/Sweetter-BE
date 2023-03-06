@@ -9,7 +9,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "users")
 @Getter
@@ -24,7 +26,7 @@ public class User extends TimeStamped{
     private String userId;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
     @Email
     @Column(nullable = false, unique = true)
@@ -40,6 +42,10 @@ public class User extends TimeStamped{
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role = UserRoleEnum.USER;
 
+    @OneToMany(mappedBy = "user",orphanRemoval = true, cascade=CascadeType.REMOVE)
+    @OrderBy("createdAt DESC")
+    private Set<Post> postSet = new LinkedHashSet<>();
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "follower")
     @JsonIgnore
     private List<Follow> followers;
@@ -49,7 +55,6 @@ public class User extends TimeStamped{
     private List<Follow> followings;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    @JsonIgnore
     private List<BookMark> bookMarkList;
 
     public User(String userId, String password, String username, String email, UserRoleEnum role) {
@@ -64,7 +69,6 @@ public class User extends TimeStamped{
         this.backgroundImage = userRequestDto.getBackgroundImage();
         this.introduction = userRequestDto.getIntroduction();
         this.username = userRequestDto.getUsername();
-        this.email = userRequestDto.getEmail();
     }
 
     public void updatePassword(String newPassword) {

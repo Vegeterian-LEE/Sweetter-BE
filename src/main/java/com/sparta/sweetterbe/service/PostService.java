@@ -26,21 +26,32 @@ public class PostService {
     private final UserRepository userRepository;
     private final RetweetRepository retweetRepository;
     private final CommentRepository commentRepository;
+    private final FollowRepository followRepository;
 
+    //각 Post에 내가 좋아요 리트윗 했는지
     public HomePageDto getHome(UserDetailsImpl userDetails) {
-        List<Post> allPost= postRepository.findAll();
+        User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
+                () -> new EntityNotFoundException("회원을 찾지 못했습니다.")
+        );
+        List<Post> allPost = postRepository.findAllByUserNotOrderByCreatedAtDesc(user);
         List<PostResponseDto> allPostResponse = new ArrayList<>();
         for (Post post : allPost){
-        allPostResponse.add(new PostResponseDto(post));
+            boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+            boolean likeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+            allPostResponse.add(new PostResponseDto(post, retweetCheck, likeCheck));
         }
-        List<PostResponseDto> followedPosts = new ArrayList<>();
+        // 팔로우 한 유저의 게시글만 조회
+        List<PostResponseDto> followedPostResponse = new ArrayList<>();
+        List<Follow> followList= followRepository.findAllByFollowing_IdAndIsAccepted(user.getId(),true);
         for (Post post : allPost) {
-            for (int i=0; i<userDetails.getUser().getFollowings().size(); i++)
-        if (post.getUser().equals(userDetails.getUser().getFollowings().get(i))){
-            followedPosts.add(new PostResponseDto(post));
+            for (int i=0; i<followList.size(); i++){
+        if (followList.get(i).getFollower().getId()==post.getUser().getId()){
+            boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+            boolean likeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+            followedPostResponse.add(new PostResponseDto(post, retweetCheck, likeCheck));}
         }
         }
-        return new HomePageDto(allPostResponse, followedPosts);
+        return new HomePageDto(allPostResponse, followedPostResponse);
     }
 
     //게시글 생성
@@ -48,6 +59,7 @@ public class PostService {
         User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
                 () -> new EntityNotFoundException("회원을 찾지 못했습니다.")
         );
+        
         Post post = new Post(requestDto, user);
         postRepository.save(post);
         return new PostResponseDto(post);

@@ -10,10 +10,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FollowResponseDto {
     private String followername;
+    private String followingname;
     private boolean isAccepted;
 
     FollowResponseDto (Follow follow) {
         this.followername = follow.getFollower().getUsername();
+        this.followingname = follow.getFollowing().getUsername();
         this.isAccepted = follow.isAccepted();;
     }
 

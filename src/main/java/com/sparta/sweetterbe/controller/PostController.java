@@ -26,7 +26,7 @@ public class PostController {
 
 
     // 다중 업로드 가능하게 List로 받습니다.
-    @PostMapping("/upload")
+    @PostMapping(consumes = "multipart/form-data", value="/upload")
     public StatusResponseDto<List<String>> uploadImage(@RequestParam(value = "image") List<MultipartFile> multipartFiles) throws IOException {
         return StatusResponseDto.success(s3UploadService.uploadFiles(multipartFiles, "sweetter"));
     }
@@ -50,10 +50,10 @@ public class PostController {
         return postService.reTweetAndUnreTweet(postId, userDetails);
     }
 
-    //메인 홈 페이지 post들 호출 기능
+    //메인 홈 페이지 post 조회 기능
     @GetMapping("/home")
-    public HomePageDto getHome(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return postService.getHome(userDetails);
+    public StatusResponseDto<HomePageDto> getHome(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return StatusResponseDto.success(postService.getHome(userDetails));
     }
 
     // 북 마크 기능

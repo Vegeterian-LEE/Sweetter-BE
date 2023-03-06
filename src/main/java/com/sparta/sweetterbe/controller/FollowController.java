@@ -16,29 +16,40 @@ import java.nio.file.AccessDeniedException;
 public class FollowController {
     private final FollowService followService;
 
-    @PostMapping("/{followUsername}")
+    @PostMapping("/{followerUsername}")
     public StatusResponseDto<FollowResponseDto> makeFollow(
-            @PathVariable String followUsername,
-            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) throws AccessDeniedException {
-        return StatusResponseDto.success(followService.makeFollow(followUsername, userDetails));
-    }
-
-    @PutMapping("/approve/{followerUsername}")
-    public StatusResponseDto<FollowResponseDto> approveFollow(
             @PathVariable String followerUsername,
             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws AccessDeniedException {
-        followService.approveFollow(followerUsername, userDetails);
         return StatusResponseDto.success(followService.makeFollow(followerUsername, userDetails));
     }
 
-    @DeleteMapping("/deny/{followerUsername}")
-    public StatusResponseDto<String> denyFollow(
+    @DeleteMapping ("/{followerUsername}")
+    public StatusResponseDto<String> deleteFollow(
             @PathVariable String followerUsername,
             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws AccessDeniedException {
-        followService.denyFollow(followerUsername, userDetails);
+        followService.deleteFollow(followerUsername, userDetails);
+        return StatusResponseDto.success("삭제성공");
+    }
+
+
+
+    @PutMapping("/approve/{followingUsername}")
+    public StatusResponseDto<FollowResponseDto> approveFollow(
+            @PathVariable String followingUsername,
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) throws AccessDeniedException {
+        followService.approveFollow(followingUsername, userDetails);
+        return StatusResponseDto.success(followService.approveFollow(followingUsername, userDetails));
+    }
+
+    @DeleteMapping("/deny/{followingUsername}")
+    public StatusResponseDto<String> denyFollow(
+            @PathVariable String followingUsername,
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) throws AccessDeniedException {
+        followService.denyFollow(followingUsername, userDetails);
         return StatusResponseDto.success("삭제 성공");
     }
 
