@@ -17,6 +17,7 @@ public class BookMark {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "Memo_ID", nullable = false)
     private Post post;
 
 
