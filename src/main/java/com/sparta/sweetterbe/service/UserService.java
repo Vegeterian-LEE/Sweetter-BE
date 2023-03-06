@@ -76,11 +76,8 @@ public class UserService {
     public UserResponseDto updateProfile(UserRequestDto userRequestDto, UserDetailsImpl userDetail) {
         User user = userRepository.findById(userDetail.getUser().getId()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다."));
-        if (!userRequestDto.getNewPassword().isEmpty() && userRequestDto.getNewPassword().equals(userRequestDto.getNewPasswordConfirm())){
+        if (!userRequestDto.getNewPassword().isEmpty()){
             user.updatePassword(passwordEncoder.encode(userRequestDto.getNewPassword()));
-        }
-        else if (!userRequestDto.getNewPassword().equals(userRequestDto.getNewPasswordConfirm())) {
-            throw new IllegalArgumentException("변경하려는 비밀 번호가 일치하지 않습니다.");
         }
         user.update(userRequestDto);
         return new UserResponseDto(user);

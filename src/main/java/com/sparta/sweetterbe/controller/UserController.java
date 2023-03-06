@@ -28,12 +28,7 @@ public class UserController {
                                          @Parameter(hidden = true) HttpServletResponse response){
         return StatusResponseDto.success(userService.login(loginRequestDto, response));
     }
-    //리턴 값 FE와 협의 필요 - 정환
-    @PostMapping("/checkpw")
-    public StatusResponseDto<String> checkPassword(@RequestBody PasswordRequestDto passwordRequestDto,
-                                                   @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return StatusResponseDto.success(userService.checkPassword(passwordRequestDto, userDetails));
-    }
+
     //내 정보 변경
     @PutMapping("/settings/profile")
     public StatusResponseDto<UserResponseDto> updateProfile(@RequestBody UserRequestDto userRequestDto,
