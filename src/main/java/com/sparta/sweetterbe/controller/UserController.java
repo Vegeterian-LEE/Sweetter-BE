@@ -21,6 +21,7 @@ public class UserController {
     public StatusResponseDto<String> signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
         return StatusResponseDto.success(userService.signup(signupRequestDto));
     }
+
     //로그인 후 페이지 구성에 사용할 유저정보 리턴 - 정환
     @PostMapping("/login")
     public StatusResponseDto<UserResponseDto> login(@RequestBody LoginRequestDto loginRequestDto,
