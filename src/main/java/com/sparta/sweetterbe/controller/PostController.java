@@ -63,8 +63,9 @@ public class PostController {
 
     // 북 마크 기능
     @GetMapping("/BookMarkes")
-    public StatusResponseDto<List<PostResponseDto>> getPostByBookMark() {
-        return StatusResponseDto.success(postService.getPostsByQueryCondition());
+    public StatusResponseDto<List<PostResponseDto>> getPostByBookMark(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return StatusResponseDto.success(postService.getPostsByBookMark(userDetails));
     }
 
     //게시글 좋아요 기능

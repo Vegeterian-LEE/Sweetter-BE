@@ -8,6 +8,7 @@ import com.sparta.sweetterbe.repository.PostLikeRepository;
 import com.sparta.sweetterbe.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.joda.time.LocalDateTime;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -177,9 +178,24 @@ public class PostService {
         return optionalPost_review.orElse(null);
     }
 
-    @Transactional
-    public List<PostResponseDto> getPostsByQueryCondition() {
-        return postRepository.findAllByBookMarkSet();
+
+
+    @Transactional(readOnly = true)
+    public List<PostResponseDto> getPostsByBookMark(UserDetailsImpl userDetails) {
+        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                () -> new UsernameNotFoundException("인증된 유저가 아닙니다")
+        );
+        List<Post> postList = postRepository.findAllByBookMarkSet();
+        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
+        for (Post post : postList){
+            Set<BookMark> bookMarkList = post.getBookMarkSet();
+            for (BookMark bookMark : bookMarkList){
+                if(bookMark.getUser().getId()==user.getId()){
+                    postResponseDtoList.add(new PostResponseDto(post));
+                }
+            }
+        }
+        return postResponseDtoList;
     }
 
 }
