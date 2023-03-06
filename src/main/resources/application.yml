@@ -35,5 +35,4 @@ logging:
 jwt:
   secret:
     key: ''
-server:
-  port: '8080'
+
