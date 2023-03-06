@@ -64,7 +64,6 @@ public class User extends TimeStamped{
         this.backgroundImage = userRequestDto.getBackgroundImage();
         this.introduction = userRequestDto.getIntroduction();
         this.username = userRequestDto.getUsername();
-        this.email = userRequestDto.getEmail();
     }
 
     public void updatePassword(String newPassword) {

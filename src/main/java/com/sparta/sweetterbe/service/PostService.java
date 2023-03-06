@@ -34,13 +34,17 @@ public class PostService {
         List<Post> allPost = postRepository.findAllByUserNotOrderByCreatedAtDesc(user);
         List<PostResponseDto> allPostResponse = new ArrayList<>();
         for (Post post : allPost){
-        allPostResponse.add(new PostResponseDto(post));
+            boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+            boolean likeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+            allPostResponse.add(new PostResponseDto(post, retweetCheck, likeCheck));
         }
         List<PostResponseDto> followedPostResponse = new ArrayList<>();
         for (Post post : allPost) {
             for (int i=0; i<user.getFollowings().size(); i++){
         if (Objects.equals(post.getUser(), user.getFollowings().get(i))){
-            followedPostResponse.add(new PostResponseDto(post));}
+            boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+            boolean likeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+            followedPostResponse.add(new PostResponseDto(post, retweetCheck, likeCheck));}
         }
         }
         return new HomePageDto(allPostResponse, followedPostResponse);
