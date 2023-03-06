@@ -25,7 +25,7 @@ public class PostController {
 
 
     // 다중 업로드 가능하게 List로 받습니다.
-    @PostMapping("/upload")
+    @PostMapping(consumes = {"multipart/form-data"}, value="/upload")
     public StatusResponseDto<List<String>> uploadImage(@RequestParam(value = "image") List<MultipartFile> multipartFiles) throws IOException {
         return StatusResponseDto.success(s3UploadService.uploadFiles(multipartFiles, "sweetter"));
     }
