@@ -82,22 +82,12 @@ public class UserService {
         user.update(userRequestDto);
         return new UserResponseDto(user);
     }
-
-    @Transactional
-    public String checkPassword(PasswordRequestDto passwordRequestDto, UserDetailsImpl userDetail) {
-        User user = userRepository.findById(userDetail.getUser().getId()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다."));
-        if (!passwordEncoder.matches(passwordRequestDto.getPassword(), user.getPassword())){
-            throw new IllegalArgumentException("비밀 번호가 틀렸습니다.");
-        }
-        return "비밀번호가 일치합니다.";
-    }
     @Transactional
     public List<UserListDto> getUserList(UserDetailsImpl userDetails) {
         List<User> users = userRepository.findAllByUserIdNot(userDetails.getUser().getUserId());
         List<UserListDto> userList = new ArrayList<>();
         for (int i=0; i< users.size(); i++){
-            boolean followed = !followRepository.findAllByFollowingAndFollower(users.get(i),userDetails.getUser()).isEmpty();
+            boolean followed = !followRepository.findAllByFollowing_IdAndFollower_IdAndIsAccepted(userDetails.getUser().getId(), users.get(i).getId(), true).isEmpty();
             userList.add(new UserListDto(users.get(i), followed));
         }
         return userList;
