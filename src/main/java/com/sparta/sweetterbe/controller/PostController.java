@@ -57,7 +57,7 @@ public class PostController {
 
     //메인 홈 페이지 post들 호출 기능
     @GetMapping("/home")
-    public HomePageDto getHome(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public String getHome(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
         return postService.getHome(userDetails);
     }
 
