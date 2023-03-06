@@ -59,7 +59,7 @@ jobs:
           cloud.aws.credentials.secretKey: ${{ secrets.S3_SECRET_KEY }}
           cloud.aws.s3.bucket: ${{ secrets.S3_BUCKET }}
           cloud.aws.region.static: ${{ secrets.S3_REGION_STATIC }}
-          cloud.aws.stack.auto: false
+          cloud.aws.stack.auto: ${{ secrets.S3_STACK_AUTO }}
 
       # (3) Gradle build (Test 제외)
       - name: Build with Gradle
