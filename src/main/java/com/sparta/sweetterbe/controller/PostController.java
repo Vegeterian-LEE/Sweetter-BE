@@ -31,12 +31,6 @@ public class PostController {
         return StatusResponseDto.success(s3UploadService.uploadFiles(multipartFiles, "sweetter"));
     }
 
- // 프로필에 들어가는 post리스트 호출 기능
-    @GetMapping("/post/{userId}")
-    public StatusResponseDto<UserPageDto> getUserPage(@PathVariable Long userId, @Parameter(hidden = true)@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return StatusResponseDto.success(postService.getUserPage(userId, userDetails));
-    }
-
     //게시글 작성
     @PostMapping("/post")
     public StatusResponseDto<PostResponseDto> createPost(@RequestBody PostRequestDto requestDto,@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
