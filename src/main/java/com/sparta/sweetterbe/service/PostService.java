@@ -27,10 +27,13 @@ public class PostService {
     private final RetweetRepository retweetRepository;
     private final CommentRepository commentRepository;
 
-    public HomePageDto getHome(UserDetailsImpl userDetails) {
-        List<Post> allPost= postRepository.findAll();
-        List<PostResponseDto> allPostResponse = new ArrayList<>();
-        for (Post post : allPost){
+    public String getHome(UserDetailsImpl userDetails) {
+        User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
+                () -> new EntityNotFoundException("회원을 찾지 못했습니다.")
+        );
+       List<Post> allPost = postRepository.findAllByUserNot(user); // 여기서 담아오는게 안됨
+/*        List<PostResponseDto> allPostResponse = new ArrayList<>();*/
+/*        for (Post post : allPost){
         allPostResponse.add(new PostResponseDto(post));
         }
         List<PostResponseDto> followedPosts = new ArrayList<>();
@@ -40,7 +43,8 @@ public class PostService {
             followedPosts.add(new PostResponseDto(post));
         }
         }
-        return new HomePageDto(allPostResponse, followedPosts);
+        return new HomePageDto(allPostResponse, followedPosts);*/
+        return "잘통과합니다";
     }
 
     //지금 다 유저로 찾고 있는데 id값(숫자)로 찾아야하는것 아닐지 고민좀..
