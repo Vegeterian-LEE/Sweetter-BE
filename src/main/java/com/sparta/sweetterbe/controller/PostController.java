@@ -32,7 +32,8 @@ public class PostController {
 
     // 프로필에 들어가는 post리스트 호출 기능
     @GetMapping("")
-    public StatusResponseDto<UserPageDto> getUserPage(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    public StatusResponseDto<UserPageDto> getUserPage(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
         return StatusResponseDto.success(postService.getUserPage(userDetails));
     }
 
@@ -44,13 +45,15 @@ public class PostController {
 
     //게시글 삭제
     @DeleteMapping("/post/{postId}")
-    public StatusResponseDto<String> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) throws AuthenticationException {
+    public StatusResponseDto<String> deletePost(@PathVariable Long postId,
+                                                @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) throws AuthenticationException {
         return postService.deletePost(postId, userDetails);
     }
 
     //리트윗 기능
     @PostMapping("/retweet/{postId}")
-    public StatusResponseDto<?> reTweetAndUnreTweet(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto<?> reTweetAndUnreTweet(@PathVariable Long postId,
+                                                    @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.reTweetAndUnreTweet(postId, userDetails);
     }
 
@@ -68,7 +71,8 @@ public class PostController {
 
     //게시글 좋아요 기능
     @PostMapping("/post/like/{postId}")
-    public StatusResponseDto<IsLikeResponseDto> likePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto<IsLikeResponseDto> likePost(@PathVariable Long postId,
+                                                         @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.likePost(postId, userDetails);
     }
 }
