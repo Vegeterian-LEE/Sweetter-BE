@@ -26,25 +26,24 @@ public class PostService {
     private final UserRepository userRepository;
     private final RetweetRepository retweetRepository;
     private final CommentRepository commentRepository;
-
-    public String getHome(UserDetailsImpl userDetails) {
+    //각 Post에 내가 좋아요 리트윗 했는지
+    public HomePageDto getHome(UserDetailsImpl userDetails) {
         User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
                 () -> new EntityNotFoundException("회원을 찾지 못했습니다.")
         );
-       List<Post> allPost = postRepository.findAllByUserNot(user); // 여기서 담아오는게 안됨
-/*        List<PostResponseDto> allPostResponse = new ArrayList<>();*/
-/*        for (Post post : allPost){
+        List<Post> allPost = postRepository.findAllByUserNotOrderByCreatedAtDesc(user);
+        List<PostResponseDto> allPostResponse = new ArrayList<>();
+        for (Post post : allPost){
         allPostResponse.add(new PostResponseDto(post));
         }
-        List<PostResponseDto> followedPosts = new ArrayList<>();
+        List<PostResponseDto> followedPostResponse = new ArrayList<>();
         for (Post post : allPost) {
-            for (int i=0; i<userDetails.getUser().getFollowings().size(); i++)
-        if (post.getUser().equals(userDetails.getUser().getFollowings().get(i))){
-            followedPosts.add(new PostResponseDto(post));
+            for (int i=0; i<user.getFollowings().size(); i++){
+        if (Objects.equals(post.getUser(), user.getFollowings().get(i))){
+            followedPostResponse.add(new PostResponseDto(post));}
         }
         }
-        return new HomePageDto(allPostResponse, followedPosts);*/
-        return "잘통과합니다";
+        return new HomePageDto(allPostResponse, followedPostResponse);
     }
 
     //지금 다 유저로 찾고 있는데 id값(숫자)로 찾아야하는것 아닐지 고민좀..

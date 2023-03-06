@@ -43,6 +43,10 @@ public class UserService {
         if (foundEmail.isPresent()){
             throw new IllegalArgumentException("중복된 이메일 존재");
         }
+        Optional<User> foundUsername = userRepository.findByUsername(username);
+        if (foundUsername.isPresent()){
+            throw new IllegalArgumentException("중복된 유저네임 존재");
+        }
 
         UserRoleEnum role = UserRoleEnum.USER;
 

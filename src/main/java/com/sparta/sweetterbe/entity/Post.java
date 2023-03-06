@@ -17,9 +17,9 @@ import java.util.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE post SET deleted = true WHERE id = ?")
+//@SQLDelete(sql = "UPDATE post SET deleted = true WHERE id = ?")
 // delete 구문 입력 시 추가로 delete 컬럼이 true로 변경되도록 쿼리를 날린다.
-@Where(clause = "deleted = false")
+//@Where(clause = "deleted = false")
 // isDeleted의 디폴트 값은 false이다.
 public class Post extends TimeStamped {
     @Id
