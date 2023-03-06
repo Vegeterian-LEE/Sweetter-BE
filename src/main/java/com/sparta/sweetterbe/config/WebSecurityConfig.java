@@ -76,40 +76,15 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         return http.build();
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-
-        CorsConfiguration config = new CorsConfiguration();
-
-        // 사전에 약속된 출처를 명시
-        config.addAllowedOrigin("http://localhost:3000");
-        config.addAllowedOrigin("http://api.jingyulee.shop/v3/api-docs");
-        config.addAllowedOrigin("https://api.jingyulee.shop/v3/api-docs");
-        config.addAllowedOrigin("https://viking-band.s3.ap-northeast-2.amazonaws.com/**");
-
-
-        // 특정 헤더를 클라이언트 측에서 사용할 수 있게 지정
-        // 만약 지정하지 않는다면, Authorization 헤더 내의 토큰 값을 사용할 수 없음
-        config.addExposedHeader(jwtUtil.AUTHORIZATION_HEADER);
-
-        // 본 요청에 허용할 HTTP method(예비 요청에 대한 응답 헤더에 추가됨)
-        config.addAllowedMethod("*");
-
-        // 본 요청에 허용할 HTTP header(예비 요청에 대한 응답 헤더에 추가됨)
-        config.addAllowedHeader("*");
-
-        // 기본적으로 브라우저에서 인증 관련 정보들을 요청 헤더에 담지 않음
-        // 이 설정을 통해서 브라우저에서 인증 관련 정보들을 요청 헤더에 담을 수 있도록 해줍니다.
-        config.setAllowCredentials(true);
-
-        // allowCredentials 를 true로 하였을 때,
-        // allowedOrigin의 값이 * (즉, 모두 허용)이 설정될 수 없도록 검증합니다.
-        config.validateAllowCredentials();
-
-        // 어떤 경로에 이 설정을 적용할 지 명시합니다. (여기서는 전체 경로)
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-
-        return source;
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry
+                .addMapping("/**") // 프로그램에서 제공하는 URL
+                .allowedOrigins("*") // 요청을 허용할 출처를 명시, 전체 허용 (가능하다면 목록을 작성한다.
+                .allowedMethods("*") // 어떤 메서드를 허용할 것인지 (GET, POST...)
+                .allowedHeaders("*", "Content-Type") // 어떤 헤더들을 허용할 것인지
+                .exposedHeaders("Authorization")
+                .allowCredentials(false) // 쿠키 요청을 허용한다(다른 도메인 서버에 인증하는 경우에만 사용해야하며, true 설정시 보안상 이슈가 발생할 수 있다)
+                .maxAge((long)3600 * 24 * 365); // preflight 요청에 대한 응답을 브라우저에서 캐싱하는 시간;
     }
 }
