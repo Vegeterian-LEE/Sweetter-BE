@@ -42,6 +42,10 @@ public class User extends TimeStamped{
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role = UserRoleEnum.USER;
 
+    @OneToMany(mappedBy = "user",orphanRemoval = true, cascade=CascadeType.REMOVE)
+    @OrderBy("createdAt DESC")
+    private Set<Post> postSet = new LinkedHashSet<>();
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "follower")
     @JsonIgnore
     private List<Follow> followers;
@@ -51,7 +55,6 @@ public class User extends TimeStamped{
     private List<Follow> followings;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    @JsonIgnore
     private List<BookMark> bookMarkList;
 
     public User(String userId, String password, String username, String email, UserRoleEnum role) {
