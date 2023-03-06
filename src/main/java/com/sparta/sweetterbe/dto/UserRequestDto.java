@@ -15,9 +15,7 @@ public class UserRequestDto {
     private String introduction;
     @Pattern(regexp = "(?=.*?[a-zA-Z])(?=.*?[\\d])(?=.*?[~!@#$%^&*()_+=\\-`]).{8,15}")
     private String newPassword;
-    private String newPasswordConfirm;
     @NotNull
     private String username;
-    @Email
-    private String email;
+
 }

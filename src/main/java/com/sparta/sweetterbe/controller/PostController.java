@@ -55,7 +55,7 @@ public class PostController {
         return postService.reTweetAndUnreTweet(postId, userDetails);
     }
 
-    //메인 홈 페이지 post들 호출 기능
+    //메인 홈 페이지 post 조회 기능
     @GetMapping("/home")
     public StatusResponseDto<HomePageDto> getHome(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
         return StatusResponseDto.success(postService.getHome(userDetails));
