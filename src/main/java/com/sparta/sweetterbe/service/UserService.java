@@ -87,7 +87,7 @@ public class UserService {
         List<User> users = userRepository.findAllByUserIdNot(userDetails.getUser().getUserId());
         List<UserListDto> userList = new ArrayList<>();
         for (User user : users) {
-            boolean followed = !followRepository.findAllByFollowing_IdAndFollower_IdAndIsAccepted(userDetails.getUser().getId(), user.getId(), true).isEmpty();
+            boolean followed = !followRepository.findAllByFollowing_IdAndFollower_Id(userDetails.getUser().getId(), user.getId()).isEmpty();
             if (!followed) {
                 userList.add(new UserListDto(user, false));
             }
@@ -117,14 +117,14 @@ public class UserService {
         int followernumber=0;
         int followingnumber=0;
         for(Follow follow : user.getFollowers()){
-            if(follow.isAccepted()){
+           // if(follow.isAccepted()){
                 followingnumber++;
-            }
+           // }
         }
         for(Follow follow : user.getFollowings()){
-            if(follow.isAccepted()){
+           // if(follow.isAccepted()){
                 followernumber++;
-            }
+           // }
         }
         return new UserInfoResponseDto(user,followernumber,followingnumber);
     }

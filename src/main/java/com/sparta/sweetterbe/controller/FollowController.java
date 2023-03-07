@@ -35,7 +35,7 @@ public class FollowController {
 
 
 
-    @PutMapping("/approve/{followingUsername}")
+    /*@PutMapping("/approve/{followingUsername}")
     public StatusResponseDto<FollowResponseDto> approveFollow(
             @PathVariable String followingUsername,
             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -51,6 +51,6 @@ public class FollowController {
     ) throws AccessDeniedException {
         followService.denyFollow(followingUsername, userDetails);
         return StatusResponseDto.success("삭제 성공");
-    }
+    }*/
 
 }

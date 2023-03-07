@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class UserInfoResponseDto {
+    private Long id;
     private String userId;
     private String username;
     private String profileImage;
@@ -18,6 +19,7 @@ public class UserInfoResponseDto {
 
 
     public UserInfoResponseDto(User user, int followernumber, int followingnumber){
+        this.id=user.getId();
         this.username = user.getUsername();
         this.userId = user.getUserId();
         this.profileImage = user.getProfileImage();

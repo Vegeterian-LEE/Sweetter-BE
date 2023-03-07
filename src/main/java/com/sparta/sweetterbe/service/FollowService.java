@@ -89,7 +89,7 @@ public class FollowService {
     }
 
 
-    @Transactional
+    /*@Transactional
     public FollowResponseDto approveFollow(String followingname, UserDetailsImpl userDetails)throws AccessDeniedException{
         User follower = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () ->  new UsernameNotFoundException("인증된 유저가 아닙니다")
@@ -134,25 +134,6 @@ public class FollowService {
                 ()-> new EntityNotFoundException("해당 유저의 팔로우 신청을 확인할 수 없습니다")
         );
         followRepository.delete(follow);
-    }
-
-    /*@Transactional
-    public FollowResponseDto getFollowers(
-            Long followerId,
-            UserDetailsImpl userDetails
-    ) {
-        User following = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new UsernameNotFoundException("인증된 유저가 아닙니다")
-        );
-
-        // 팔로우할 유저를 ID로 조회
-        User follower = userRepository.findById(followerId).orElseThrow(
-                () -> new UsernameNotFoundException("유저를 조회할 수 없습니다")
-        );
-
-        List<Follow> followerList = followRepository.findAllByFollower(follower);
-
-
     }*/
 
 }
