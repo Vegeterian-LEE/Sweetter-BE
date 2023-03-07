@@ -28,6 +28,7 @@ public class PostService {
     private final RetweetRepository retweetRepository;
     private final CommentRepository commentRepository;
     private final FollowRepository followRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     //각 Post에 내가 좋아요 리트윗 했는지
     public HomePageDto getHome(UserDetailsImpl userDetails) {
@@ -39,7 +40,7 @@ public class PostService {
         for (Post post : allPost){
             boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
             boolean likeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
-            allPostResponse.add(new PostResponseDto(post, retweetCheck, likeCheck));
+            allPostResponse.add(new PostResponseDto(post, likeCheck, retweetCheck));
         }
         // 팔로우 한 유저의 게시글만 조회
         List<PostResponseDto> followedPostResponse = new ArrayList<>();
@@ -145,5 +146,21 @@ public class PostService {
         return postResponseDtoList;
     }
 
+    public PostResponseDto getPostDetails(Long postId, UserDetailsImpl userDetails) {
+        User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
+                () -> new EntityNotFoundException("회원을 찾지 못했습니다."));
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new EntityNotFoundException("해당 게시글을 찾지 못합니다."));
+        boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+        boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+        List<Comment> comments = commentRepository.findAllByPostId(postId);
+        List<CommentResponseDto> commentList = new ArrayList<>();
+        for (Comment comment : comments){
+            boolean commentLikeCheck = !commentLikeRepository.findAllByUserIdAndCommentId(user.getId(),comment.getId()).isEmpty();
+            commentList.add(new CommentResponseDto(comment, commentLikeCheck));
+        }
+        PostResponseDto postDetails = new PostResponseDto(post, retweetCheck, postLikeCheck, commentList);
+        return postDetails;
+    }
 }
 
