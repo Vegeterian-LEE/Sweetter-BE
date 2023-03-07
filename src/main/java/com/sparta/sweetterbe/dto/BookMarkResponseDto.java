@@ -10,10 +10,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class BookMarkResponseDto {
-    private boolean isWished;
+    private boolean isMarked;
 
-    BookMarkResponseDto(boolean isWished){
-        this.isWished = isWished;
+    BookMarkResponseDto(boolean isMarked){
+        this.isMarked = isMarked;
     }
 
     public static BookMarkResponseDto of(boolean isWished){

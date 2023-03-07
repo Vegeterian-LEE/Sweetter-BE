@@ -29,6 +29,7 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final FollowRepository followRepository;
     private final CommentLikeRepository commentLikeRepository;
+    private final BookMarkRepository bookMarkRepository;
 
     //각 Post에 내가 좋아요 리트윗 했는지
     public HomePageDto getHome(UserDetailsImpl userDetails) {
@@ -132,16 +133,12 @@ public class PostService {
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new UsernameNotFoundException("인증된 유저가 아닙니다")
         );
-        List<Post> postList = postRepository.findAllByBookMarkList();
+
+        List<BookMark> bookMarks = bookMarkRepository.findByUser(user);
+        bookMarks.sort(Comparator.comparing(BookMark::getModifiedAt).reversed());
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
-        for (Post post : postList){
-            List<BookMark> bookMarkList = post.getBookMarkList();
-            //bookMarkList.sort(Comparator.comparing(BookMark::getCreatedAt));
-            for (BookMark bookMark : bookMarkList){
-                if(bookMark.getUser().getId()==user.getId()){
-                    postResponseDtoList.add(new PostResponseDto(post));
-                }
-            }
+        for(BookMark bookMark: bookMarks){
+            postResponseDtoList.add(new PostResponseDto(bookMark.getPost()));
         }
         return postResponseDtoList;
     }

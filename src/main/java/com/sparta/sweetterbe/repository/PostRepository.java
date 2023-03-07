@@ -15,14 +15,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findAllByUserNotOrderByCreatedAtDesc(User user);
 
-    List<Post> findAll();
+    List<Post> findAllByUser(User user);
 
-    @Query( "select p from Post p" +
-            " right join p.bookMarkList m" +
-            " where m.id != null"+
+    /*@Query( "select p from Post p" +
+            " left join p.bookMarkList m" +
             " group by p.id" +
-            " order by m.createdAt")
-    List<Post> findAllByBookMarkList();
+            " order by m.id desc")
+    List<Post> findAllByBookMarkList();*/
 
 
 

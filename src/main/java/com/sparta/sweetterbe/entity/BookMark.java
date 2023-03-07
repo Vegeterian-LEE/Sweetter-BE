@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Getter
-@Entity(name = "BookMark")
+@Entity(name = "bookmark")
 @NoArgsConstructor
 public class BookMark extends TimeStamped{
     @Id
@@ -14,6 +14,7 @@ public class BookMark extends TimeStamped{
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_ID", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
