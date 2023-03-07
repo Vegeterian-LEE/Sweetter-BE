@@ -12,6 +12,7 @@ import com.sparta.sweetterbe.service.DeduplicationUtils;
 import lombok.RequiredArgsConstructor;
 import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -29,7 +30,9 @@ public class ProfileService {
     private final CommentRepository commentRepository;
 
     // 첫번째 리스트
+    @Transactional
     public List<ProfileResponseDto> getTweetList(Long userId, UserDetailsImpl userDetails) {
+
         User user = userRepository.findById(userId).orElseThrow(
                 ()-> new EntityNotFoundException("해당 유저를 찾지 못했습니다.")
         );
@@ -55,6 +58,7 @@ public class ProfileService {
     }
 
     //두번째 리스트
+    @Transactional
     public ProfileSecondListResponsDto getUserList(Long userId, UserDetailsImpl userDetails) {
         User user = userRepository.findById(userId).orElseThrow(
                 ()-> new EntityNotFoundException("해당 유저를 찾을 수 없습니다.")
@@ -85,7 +89,7 @@ public class ProfileService {
         return new ProfileSecondListResponsDto(tweetList, commentList);
     }
 
-
+    @Transactional
     public List<ProfileResponseDto> getMediaList(Long userId, UserDetailsImpl userDetails) {
         User user = userRepository.findById(userId).orElseThrow(
                 ()-> new EntityNotFoundException("해당 유저를 찾지 못했습니다.")
@@ -104,7 +108,7 @@ public class ProfileService {
 
         return MediaPostList;
     }
-
+    @Transactional
     public List<ProfileResponseDto> getLikeList(Long userId, UserDetailsImpl userDetails){
         User user = userRepository.findById(userId).orElseThrow(
                 ()-> new EntityNotFoundException("해당 유저를 찾을 수 없습니다.")

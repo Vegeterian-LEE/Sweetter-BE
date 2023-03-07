@@ -40,11 +40,11 @@ public class CommentService {
     public StatusResponseDto<String> deleteComment(Long id, UserDetailsImpl userDetails) throws AuthenticationException {
         User user = userDetails.getUser();
         Comment comment = commentRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("댓글을 찾을 수 없음")
+                () -> new EntityNotFoundException("댓글을 찾을 수 없습니다")
         );
         if (user.getRole() == UserRoleEnum.ADMIN || user.getUsername().equals(comment.getUser().getUsername())) {
             commentRepository.deleteById(id);
-            return StatusResponseDto.success("delete success!");
+            return StatusResponseDto.success("댓글을 삭제하였습니다");
         } else {
             throw new AuthenticationException("작성자만 수정이 가능합니다.");
         }
@@ -59,6 +59,6 @@ public class CommentService {
             return StatusResponseDto.success(new IsLikeResponseDto("댓글에 좋아요가 취소 되었습니다.", false));
         }
         commentLikeRepository.save(new CommentLike(comment, userDetails.getUser()));
-        return StatusResponseDto.success(new IsLikeResponseDto("댓글 좋아요 성공", true));
+        return StatusResponseDto.success(new IsLikeResponseDto("댓글 좋아요 성공하였습니다", true));
     }
 }

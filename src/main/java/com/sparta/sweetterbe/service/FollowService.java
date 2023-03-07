@@ -50,9 +50,7 @@ public class FollowService {
         Follow check = new Follow(follower, following);
         if(follow==null){
             followRepository.save(check);
-
         }
-
         // 팔로우 처리가 완료되었거나, 요청을 했는 데 팔로우 신청을 한 번 더한 경우
         // -> 팔로우 삭제
         else{
