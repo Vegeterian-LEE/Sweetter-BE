@@ -99,7 +99,9 @@ public class UserService {
                 "%" + searchWord + "%", "%" + searchWord + "%");
         List<UserResponseDto> searchUserList = new ArrayList<>();
         for (User user : allUser){
+            if (!user.getUserId().equals(userDetails.getUser().getUserId())){
             searchUserList.add(new UserResponseDto(user));
+        }
         }
         return searchUserList;
     }
