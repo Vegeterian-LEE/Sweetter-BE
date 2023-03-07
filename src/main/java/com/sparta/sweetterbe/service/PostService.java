@@ -82,11 +82,15 @@ public class PostService {
         return StatusResponseDto.success("삭제 성공");
     }
 
-    //리트윗 기능
+    //리트윗 == 추천 기능
     @Transactional
     public StatusResponseDto<?> reTweetAndUnreTweet(Long postId, UserDetailsImpl userDetails) {
-        User user = userDetails.getUser();
+        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                ()-> new EntityNotFoundException("유저를 찾을 수 없습니다")
+        );
+
         Post post = isPresentPost(postId);
+        //내가 리트윗한 게시글의 리트윗목록을 가져오기
         List<Retweet> retweetList = retweetRepository.findAllByUserIdAndPostId(user.getId(), postId);
 
         for (Retweet retweet : retweetList) {
@@ -106,10 +110,13 @@ public class PostService {
     @Transactional
     // 게시글 좋아요 기능
     public StatusResponseDto<IsLikeResponseDto> likePost(Long id, UserDetailsImpl userDetails) {
+        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                ()-> new EntityNotFoundException("유저를 찾을 수 없습니다")
+        );
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("게시글을 찾지 못했습니다.")
         );
-        Optional<PostLike> postLike = postLikeRepository.findByPostAndUser(post, userDetails.getUser());
+        Optional<PostLike> postLike = postLikeRepository.findByPostAndUser(post, user);
         if (postLike.isPresent()) {
             postLikeRepository.deleteById(postLike.get().getId());
             return StatusResponseDto.success(new IsLikeResponseDto("해당 게시글의 좋아요가 취소 되었습니다.", false));
@@ -119,6 +126,7 @@ public class PostService {
     }
 
     //해당 게시물이 존재하는지 알아 보는 경우
+    //메서드 추출
     @Transactional(readOnly = true)
     public Post isPresentPost(Long id) {
         Optional<Post> optionalPost_review = postRepository.findById(id);
@@ -129,7 +137,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<PostResponseDto> getPostsByBookMark(UserDetailsImpl userDetails) {
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new UsernameNotFoundException("인증된 유저가 아닙니다")
+                () -> new UsernameNotFoundException("유저를 찾을 수 없습니다")
         );
 
         List<BookMark> bookMarks = bookMarkRepository.findByUser(user);
@@ -143,17 +151,24 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostResponseDto getPostDetails(Long postId, UserDetailsImpl userDetails) {
         User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
-                () -> new EntityNotFoundException("회원을 찾지 못했습니다."));
+                () -> new EntityNotFoundException("유저를 찾을 수 없습니다"));
+
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new EntityNotFoundException("해당 게시글을 찾지 못합니다."));
+                () -> new EntityNotFoundException("해당 게시글을 찾을 수 없습니다"));
+
         boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
         boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
         List<Comment> comments = commentRepository.findAllByPostId(postId);
+
+        //최신 댓글 순으로 보여질 수 있도록 구현
+        comments.sort(Comparator.comparing(Comment::getCreatedAt).reversed());
         List<CommentResponseDto> commentList = new ArrayList<>();
         for (Comment comment : comments){
             boolean commentLikeCheck = !commentLikeRepository.findAllByUserIdAndCommentId(user.getId(),comment.getId()).isEmpty();
             commentList.add(new CommentResponseDto(comment, commentLikeCheck));
         }
+
+        //PostResponseDto 오버로드 매개변수만 다르게 해서 접근
         PostResponseDto postDetails = new PostResponseDto(post, retweetCheck, postLikeCheck, commentList);
         return postDetails;
     }

@@ -16,7 +16,8 @@ import java.nio.file.AccessDeniedException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({Exception.class,
+    })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public StatusResponseDto<?> handlerException(Exception ex){
         log.error("EX",ex);
