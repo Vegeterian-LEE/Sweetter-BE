@@ -92,6 +92,8 @@ public class UserService {
         }
         return userList;
     }
+
+    //이메일, 아이디, username search하는 한글자라도 같은 게 나오면 모두 조회되는 듯
     @Transactional
     public List<UserResponseDto> searchUser(String searchWord, UserDetailsImpl userDetails) {
         List<User> allUser = userRepository.findAllByUsernameLikeOrEmailLikeOrUserIdLike("%" + searchWord + "%",
