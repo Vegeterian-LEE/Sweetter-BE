@@ -41,7 +41,7 @@ public class PostService {
         for (Post post : allPost){
             boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
             boolean likeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
-            allPostResponse.add(new PostResponseDto(post, likeCheck, retweetCheck));
+            allPostResponse.add(new PostResponseDto(post, retweetCheck, likeCheck));
         }
         // 팔로우 한 유저의 게시글만 조회
         List<PostResponseDto> followedPostResponse = new ArrayList<>();
