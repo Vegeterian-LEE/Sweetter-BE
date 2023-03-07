@@ -84,20 +84,23 @@ public class UserService {
     public List<UserListDto> getUserList(UserDetailsImpl userDetails) {
         List<User> users = userRepository.findAllByUserIdNot(userDetails.getUser().getUserId());
         List<UserListDto> userList = new ArrayList<>();
-        for (int i=0; i< users.size(); i++){
-            boolean followed = !followRepository.findAllByFollowing_IdAndFollower_IdAndIsAccepted(userDetails.getUser().getId(), users.get(i).getId(), true).isEmpty();
-            if (!followed){
-            userList.add(new UserListDto(users.get(i), followed));}
+        for (User user : users) {
+            boolean followed = !followRepository.findAllByFollowing_IdAndFollower_IdAndIsAccepted(userDetails.getUser().getId(), user.getId(), true).isEmpty();
+            if (!followed) {
+                userList.add(new UserListDto(user, false));
+            }
         }
         return userList;
     }
-
+    @Transactional
     public List<UserResponseDto> searchUser(String searchWord, UserDetailsImpl userDetails) {
         List<User> allUser = userRepository.findAllByUsernameLikeOrEmailLikeOrUserIdLike("%" + searchWord + "%",
                 "%" + searchWord + "%", "%" + searchWord + "%");
         List<UserResponseDto> searchUserList = new ArrayList<>();
         for (User user : allUser){
+            if (!user.getUserId().equals(userDetails.getUser().getUserId())){
             searchUserList.add(new UserResponseDto(user));
+        }
         }
         return searchUserList;
     }
