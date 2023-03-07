@@ -127,7 +127,6 @@ public class PostService {
     }
 
 
-
     @Transactional(readOnly = true)
     public List<PostResponseDto> getPostsByBookMark(UserDetailsImpl userDetails) {
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
