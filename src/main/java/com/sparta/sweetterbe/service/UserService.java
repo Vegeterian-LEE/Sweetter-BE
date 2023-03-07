@@ -86,10 +86,11 @@ public class UserService {
     public List<UserListDto> getUserList(UserDetailsImpl userDetails) {
         List<User> users = userRepository.findAllByUserIdNot(userDetails.getUser().getUserId());
         List<UserListDto> userList = new ArrayList<>();
-        for (int i=0; i< users.size(); i++){
-            boolean followed = !followRepository.findAllByFollowing_IdAndFollower_IdAndIsAccepted(userDetails.getUser().getId(), users.get(i).getId(), true).isEmpty();
-            if (!followed){
-            userList.add(new UserListDto(users.get(i), followed));}
+        for (User user : users) {
+            boolean followed = !followRepository.findAllByFollowing_IdAndFollower_IdAndIsAccepted(userDetails.getUser().getId(), user.getId(), true).isEmpty();
+            if (!followed) {
+                userList.add(new UserListDto(user, false));
+            }
         }
         return userList;
     }
