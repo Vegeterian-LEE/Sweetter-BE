@@ -30,7 +30,7 @@ public class PostService {
     private final FollowRepository followRepository;
     private final CommentLikeRepository commentLikeRepository;
     private final BookMarkRepository bookMarkRepository;
-
+    @Transactional(readOnly = true)
     //각 Post에 내가 좋아요 리트윗 했는지
     public HomePageDto getHome(UserDetailsImpl userDetails) {
         User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
@@ -56,7 +56,7 @@ public class PostService {
         }
         return new HomePageDto(allPostResponse, followedPostResponse);
     }
-
+    @Transactional
     //게시글 생성
     public PostResponseDto createPost(PostRequestDto requestDto, UserDetailsImpl userDetails) {
         User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
@@ -67,7 +67,7 @@ public class PostService {
         postRepository.save(post);
         return new PostResponseDto(post);
     }
-
+    @Transactional
     //게시글 삭제
     public StatusResponseDto<String> deletePost(Long postId, UserDetailsImpl userDetails) throws AuthenticationException {
         User user = userDetails.getUser();
@@ -104,7 +104,7 @@ public class PostService {
         retweetRepository.save(retweet);
         return StatusResponseDto.success(true);
     }
-
+    @Transactional
     // 게시글 좋아요 기능
     public StatusResponseDto<IsLikeResponseDto> likePost(Long id, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(id).orElseThrow(
@@ -141,7 +141,7 @@ public class PostService {
         }
         return postResponseDtoList;
     }
-
+    @Transactional(readOnly = true)
     public PostResponseDto getPostDetails(Long postId, UserDetailsImpl userDetails) {
         User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
                 () -> new EntityNotFoundException("회원을 찾지 못했습니다."));
