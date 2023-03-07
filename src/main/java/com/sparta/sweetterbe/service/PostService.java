@@ -28,6 +28,7 @@ public class PostService {
     private final RetweetRepository retweetRepository;
     private final CommentRepository commentRepository;
     private final FollowRepository followRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     //각 Post에 내가 좋아요 리트윗 했는지
     public HomePageDto getHome(UserDetailsImpl userDetails) {
@@ -150,13 +151,14 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new EntityNotFoundException("해당 게시글을 찾지 못합니다."));
         boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
-        boolean likeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+        boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
         List<Comment> comments = commentRepository.findAllByPostId(postId);
         List<CommentResponseDto> commentList = new ArrayList<>();
         for (Comment comment : comments){
-            commentList.add(new CommentResponseDto(comment));
+            boolean commentLikeCheck = !commentLikeRepository.findAllByUserIdAndCommentId(user.getId(),comment.getId()).isEmpty();
+            commentList.add(new CommentResponseDto(comment, commentLikeCheck));
         }
-        PostResponseDto postDetails = new PostResponseDto(post, retweetCheck, likeCheck, commentList);
+        PostResponseDto postDetails = new PostResponseDto(post, retweetCheck, postLikeCheck, commentList);
         return postDetails;
     }
 }
