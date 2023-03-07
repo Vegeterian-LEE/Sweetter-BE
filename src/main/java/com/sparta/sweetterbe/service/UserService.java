@@ -73,8 +73,8 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto updateProfile(UserRequestDto userRequestDto, UserDetailsImpl userDetail) {
-        User user = userRepository.findById(userDetail.getUser().getId()).orElseThrow(
+    public UserResponseDto updateProfile(UserRequestDto userRequestDto, UserDetailsImpl userDetails) {
+        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다."));
         if (!userRequestDto.getNewPassword().isEmpty()){
             user.updatePassword(passwordEncoder.encode(userRequestDto.getNewPassword()));
@@ -88,8 +88,19 @@ public class UserService {
         List<UserListDto> userList = new ArrayList<>();
         for (int i=0; i< users.size(); i++){
             boolean followed = !followRepository.findAllByFollowing_IdAndFollower_IdAndIsAccepted(userDetails.getUser().getId(), users.get(i).getId(), true).isEmpty();
-            userList.add(new UserListDto(users.get(i), followed));
+            if (!followed){
+            userList.add(new UserListDto(users.get(i), followed));}
         }
         return userList;
+    }
+
+    public List<UserResponseDto> searchUser(String searchWord, UserDetailsImpl userDetails) {
+        List<User> allUser = userRepository.findAllByUsernameLikeOrEmailLikeOrUserIdLike("%" + searchWord + "%",
+                "%" + searchWord + "%", "%" + searchWord + "%");
+        List<UserResponseDto> searchUserList = new ArrayList<>();
+        for (User user : allUser){
+            searchUserList.add(new UserResponseDto(user));
+        }
+        return searchUserList;
     }
 }

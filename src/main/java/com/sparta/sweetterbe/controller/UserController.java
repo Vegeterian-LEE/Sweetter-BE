@@ -35,10 +35,15 @@ public class UserController {
                                                             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return StatusResponseDto.success(userService.updateProfile(userRequestDto, userDetails));
     }
-
+    // 현재는 본인이 팔로우 하지 않은 모든 유저가 나타나게 되어 있음
     @GetMapping("/list")
     public StatusResponseDto<List<UserListDto>> getUserList(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
         return StatusResponseDto.success(userService.getUserList(userDetails));
+    }
+
+    @GetMapping("/search/{searchWord}")
+    public StatusResponseDto<List<UserResponseDto>> searchUser(@PathVariable String searchWord, @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return StatusResponseDto.success(userService.searchUser(searchWord, userDetails));
     }
 
 

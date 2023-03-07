@@ -15,4 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByUserIdNot(String userId);
 
 
+    List<User> findAllByUsernameLike(String searchWord);
+    List<User> findAllByUsernameLikeOrEmailLikeOrUserIdLike(String searchWord1,String searchWord2, String searchWord3);
 }
