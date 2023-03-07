@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Getter
 @Entity(name = "BookMark")
 @NoArgsConstructor
-public class BookMark {
+public class BookMark{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,7 +17,7 @@ public class BookMark {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Memo_ID", nullable = false)
+    @JoinColumn(name = "post_ID", nullable = false)
     private Post post;
 
 

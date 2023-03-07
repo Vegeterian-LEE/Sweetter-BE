@@ -1,6 +1,7 @@
 package com.sparta.sweetterbe.handler;
 
 import com.sparta.sweetterbe.dto.StatusResponseDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,13 +12,15 @@ import javax.naming.AuthenticationException;
 import javax.persistence.EntityNotFoundException;
 import java.nio.file.AccessDeniedException;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public StatusResponseDto<?> handlerException(Exception ex){
-        return StatusResponseDto.fail(500, ex.getMessage());
+        log.error("EX",ex);
+        return StatusResponseDto.fail(500, ex.getStackTrace());
     }
 
     @ExceptionHandler({IllegalAccessException.class,
