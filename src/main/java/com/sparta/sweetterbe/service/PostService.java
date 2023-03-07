@@ -74,7 +74,6 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new EntityNotFoundException("해당 게시글을 찾지 못합니다.")
         );
-
         if (user.getRole() == UserRoleEnum.ADMIN || user.getUserId().equals(post.getUser().getUserId())) {
             postRepository.deleteById(postId);
         } else {
