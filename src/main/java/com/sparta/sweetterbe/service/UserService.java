@@ -94,7 +94,7 @@ public class UserService {
         }
         return userList;
     }
-
+    @Transactional
     public List<UserResponseDto> searchUser(String searchWord, UserDetailsImpl userDetails) {
         List<User> allUser = userRepository.findAllByUsernameLikeOrEmailLikeOrUserIdLike("%" + searchWord + "%",
                 "%" + searchWord + "%", "%" + searchWord + "%");
