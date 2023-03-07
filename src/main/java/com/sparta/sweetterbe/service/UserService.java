@@ -48,9 +48,7 @@ public class UserService {
             throw new IllegalArgumentException("중복된 유저네임 존재");
         }
 
-        UserRoleEnum role = UserRoleEnum.USER;
-
-        User user = new User(userId, password, username, email, role);
+        User user = new User(userId, password, username, email);
         userRepository.save(user);
         return  "회원 가입 성공!";
     }
