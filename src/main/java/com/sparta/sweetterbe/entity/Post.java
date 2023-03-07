@@ -36,7 +36,7 @@ public class Post extends TimeStamped {
 
     //순서는 없지만 중복제거 가능
     @OneToMany(mappedBy = "post", orphanRemoval = true, cascade=CascadeType.REMOVE)
-    Set<BookMark> bookMarkSet = new HashSet<>();
+    List<BookMark> bookMarkList = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     List<PostLike> likes = new ArrayList<>();

@@ -131,10 +131,11 @@ public class PostService {
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new UsernameNotFoundException("인증된 유저가 아닙니다")
         );
-        List<Post> postList = postRepository.findAllByBookMarkSet();
+        List<Post> postList = postRepository.findAllByBookMarkList();
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
         for (Post post : postList){
-            Set<BookMark> bookMarkList = post.getBookMarkSet();
+            List<BookMark> bookMarkList = post.getBookMarkList();
+            //bookMarkList.sort(Comparator.comparing(BookMark::getCreatedAt));
             for (BookMark bookMark : bookMarkList){
                 if(bookMark.getUser().getId()==user.getId()){
                     postResponseDtoList.add(new PostResponseDto(post));

@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Getter
 @Entity(name = "BookMark")
 @NoArgsConstructor
-public class BookMark{
+public class BookMark extends TimeStamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
