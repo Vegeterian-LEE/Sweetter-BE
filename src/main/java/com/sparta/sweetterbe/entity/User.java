@@ -28,7 +28,7 @@ public class User extends TimeStamped{
     private String password;
     @Column(nullable = false, unique = true)
     private String username;
-    @Email
+    @Email // @가 없거나 영문이 아닌 한글인 경우, 특수기호는 오류
     @Column(nullable = false, unique = true)
     private String email;
     @Column
@@ -46,18 +46,18 @@ public class User extends TimeStamped{
     @OrderBy("createdAt DESC")
     private Set<Post> postSet = new LinkedHashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "follower")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "follower")
     @JsonIgnore
     private List<Follow> followers;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "following")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "following")
     @JsonIgnore
     private List<Follow> followings;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
     private List<BookMark> bookMarkList;
 
-    public User(String userId, String password, String username, String email, UserRoleEnum role) {
+    public User(String userId, String password, String username, String email) {
         this.userId = userId;
         this.password = password;
         this.username = username;
