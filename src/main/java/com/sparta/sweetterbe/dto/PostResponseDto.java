@@ -11,7 +11,6 @@ import java.util.List;
 
 @Getter
 @Setter
-
 public class PostResponseDto {
 
     private Long id;
@@ -29,6 +28,7 @@ public class PostResponseDto {
     private Boolean retweetCheck;
     private Boolean likeCheck;
     private Boolean commentCheck;
+    private List<CommentResponseDto> commentList;
 
 
     @Builder
@@ -48,7 +48,7 @@ public class PostResponseDto {
 
 
     @Builder
-    public PostResponseDto(Post post, boolean likeCheck, boolean retweetCheck){
+    public PostResponseDto(Post post, boolean retweetCheck, boolean likeCheck){
         this.id = post.getId();
         this.content = post.getContent();
         this.imageUrls = post.getImageUrls();
@@ -60,5 +60,20 @@ public class PostResponseDto {
         this.userId = post.getUser().getUserId();
         this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();
+    }
+    @Builder
+    public PostResponseDto(Post post, boolean retweetCheck, boolean likeCheck, List<CommentResponseDto> commentList){
+        this.id = post.getId();
+        this.content = post.getContent();
+        this.imageUrls = post.getImageUrls();
+        this.commentCount = post.getComments().size();
+        this.retweetCount = post.getRetweets().size();
+        this.likeCount = post.getLikes().size();
+        this.likeCheck = likeCheck;
+        this.retweetCheck = retweetCheck;
+        this.userId = post.getUser().getUserId();
+        this.username = post.getUser().getUsername();
+        this.createdAt = post.getCreatedAt();
+        this.commentList = commentList;
     }
 }

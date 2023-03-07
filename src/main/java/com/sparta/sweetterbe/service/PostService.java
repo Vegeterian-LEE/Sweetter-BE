@@ -144,5 +144,20 @@ public class PostService {
         return postResponseDtoList;
     }
 
+    public PostResponseDto getPostDetails(Long postId, UserDetailsImpl userDetails) {
+        User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
+                () -> new EntityNotFoundException("회원을 찾지 못했습니다."));
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new EntityNotFoundException("해당 게시글을 찾지 못합니다."));
+        boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+        boolean likeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+        List<Comment> comments = commentRepository.findAllByPostId(postId);
+        List<CommentResponseDto> commentList = new ArrayList<>();
+        for (Comment comment : comments){
+            commentList.add(new CommentResponseDto(comment));
+        }
+        PostResponseDto postDetails = new PostResponseDto(post, retweetCheck, likeCheck, commentList);
+        return postDetails;
+    }
 }
 

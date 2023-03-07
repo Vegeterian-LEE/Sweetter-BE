@@ -42,6 +42,11 @@ public class PostController {
     public StatusResponseDto<String> deletePost(@PathVariable Long postId,@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) throws AuthenticationException {
         return postService.deletePost(postId, userDetails);
     }
+    //게시글 페이지 조회
+    @GetMapping("/post/{postId}")
+    public StatusResponseDto<PostResponseDto> getPostDetails(@PathVariable Long postId, @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return StatusResponseDto.success(postService.getPostDetails(postId ,userDetails));
+    }
 
     //리트윗 기능
     @PostMapping("/retweet/{postId}")
