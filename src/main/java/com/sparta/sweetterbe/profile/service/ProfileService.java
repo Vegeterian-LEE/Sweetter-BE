@@ -37,21 +37,30 @@ public class ProfileService {
                 ()-> new EntityNotFoundException("해당 유저를 찾지 못했습니다.")
         );
 
-        List<Post> postList = postRepository.findAllByIdOrderByCreatedAtDesc(user.getId());
+        List<Post> postList = postRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
+        boolean retweetCheck_tmp=false;
         List<ProfileResponseDto> tweetList = new ArrayList<>();
+        // tweet된 게시글을 보여줄 때 retweetcheck는 null로 보여서 수정
+        // ProfileResponseDto에서 retweetcheck가 변수로 선언되었는 데
+        // 오버로드 외에 값을 안 넣어주면 null이 생겨서 수정
         for(Post post : postList){
-            tweetList.add(new ProfileResponseDto(post));
+            for(Retweet retweet : post.getRetweets()){
+                Boolean retweetCheck = retweet.getUser().getId().equals(user.getId());
+                retweetCheck_tmp=retweetCheck;
+            }
+            tweetList.add(new ProfileResponseDto(post,retweetCheck_tmp));
         }
 
         List<Retweet> retweetList = retweetRepository.findAllByUserId(user.getId());
         for(int i = 0; i < retweetList.size(); i++){
             Boolean retweetCheck = retweetList.get(i).getUser().getId().equals(user.getId());
-            if(retweetCheck == null){
+            /*if(retweetCheck == null){
                 retweetCheck = false;
-            }
+            }*/
             tweetList.add(new ProfileResponseDto(retweetList.get(i).getPost(), retweetCheck));
         }
-        Collections.sort(tweetList, ((o1, o2) -> (int)(o1.getId() - o2.getId())));
+        //o2-o1으로 해야 내림차순 정렬
+        Collections.sort(tweetList, ((o1, o2) -> (int)(o2.getId() - o1.getId())));
         tweetList = DeduplicationUtils.deduplication(tweetList, ProfileResponseDto::getId);
 
         return tweetList;
@@ -64,7 +73,7 @@ public class ProfileService {
                 ()-> new EntityNotFoundException("해당 유저를 찾을 수 없습니다.")
         );
 
-        List<Post> postList = postRepository.findAllByIdOrderByCreatedAtDesc(user.getId());
+        List<Post> postList = postRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
         List<ProfileResponseDto> tweetList = new ArrayList<>();
         for(Post post : postList){
             tweetList.add(new ProfileResponseDto(post));
