@@ -62,7 +62,7 @@ public class PostController {
     }
 
     // 북 마크 기능
-    @GetMapping("/BookMarkes")
+    @GetMapping("/bookmarks")
     public StatusResponseDto<List<PostResponseDto>> getPostByBookMark(
             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return StatusResponseDto.success(postService.getPostsByBookMark(userDetails));

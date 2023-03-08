@@ -42,7 +42,8 @@ public class PostService {
         for (Post post : allPost){
             boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
             boolean likeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
-            allPostResponse.add(new PostResponseDto(post, retweetCheck, likeCheck));
+            boolean bookmarkCheck = !bookMarkRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+            allPostResponse.add(new PostResponseDto(post, retweetCheck, likeCheck, bookmarkCheck));
         }
         // 팔로우 한 유저의 게시글만 조회
         List<PostResponseDto> followedPostResponse = new ArrayList<>();
@@ -52,7 +53,8 @@ public class PostService {
         if (followList.get(i).getFollower().getId()==post.getUser().getId()){
             boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
             boolean likeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
-            followedPostResponse.add(new PostResponseDto(post, retweetCheck, likeCheck));}
+            boolean bookmarkCheck = !bookMarkRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+            followedPostResponse.add(new PostResponseDto(post, retweetCheck, likeCheck, bookmarkCheck));}
         }
         }
         return new HomePageDto(allPostResponse, followedPostResponse);
@@ -143,23 +145,14 @@ public class PostService {
 
         List<BookMark> bookMarks = bookMarkRepository.findByUser(user);
         bookMarks.sort(Comparator.comparing(BookMark::getCreatedAt).reversed());
-        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
+        List<PostResponseDto> bookmarkList = new ArrayList<>();
         for(BookMark bookMark: bookMarks){
             boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),bookMark.getPost().getId()).isEmpty();
             boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),bookMark.getPost().getId()).isEmpty();
-            boolean commentCheck = !commentRepository.findAllByUserIdAndPostId(user.getId(),bookMark.getPost().getId()).isEmpty();
-            List<Comment> comments = commentRepository.findAllByPostId(bookMark.getPost().getId());
-            //최신 댓글 순으로 보여질 수 있도록 구현
-            comments.sort(Comparator.comparing(Comment::getCreatedAt).reversed());
-            List<CommentResponseDto> commentList = new ArrayList<>();
-
-            for (Comment comment : comments){
-                boolean commentLikeCheck = !commentLikeRepository.findAllByUserIdAndCommentId(user.getId(),comment.getId()).isEmpty();
-                commentList.add(new CommentResponseDto(comment, commentLikeCheck));
-            }
-            postResponseDtoList.add(new PostResponseDto(bookMark.getPost(),retweetCheck, postLikeCheck, commentCheck, commentList));
+            boolean bookmarkCheck = !bookMarkRepository.findAllByUserIdAndPostId(user.getId(),bookMark.getPost().getId()).isEmpty();
+            bookmarkList.add(new PostResponseDto(bookMark.getPost(),retweetCheck, postLikeCheck, bookmarkCheck));
         }
-        return postResponseDtoList;
+        return bookmarkList;
     }
     @Transactional(readOnly = true)
     public PostResponseDto getPostDetails(Long postId, UserDetailsImpl userDetails) {
@@ -172,6 +165,7 @@ public class PostService {
         boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
         boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
         boolean commentCheck = !commentRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+        boolean bookmarkCheck = !bookMarkRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
         List<Comment> comments = commentRepository.findAllByPostId(postId);
 
         //최신 댓글 순으로 보여질 수 있도록 구현
@@ -183,7 +177,7 @@ public class PostService {
             commentList.add(new CommentResponseDto(comment, commentLikeCheck));
         }
         //PostResponseDto 오버로드 매개변수만 다르게 해서 접근
-        PostResponseDto postDetails = new PostResponseDto(post, retweetCheck, postLikeCheck, commentCheck, commentList);
+        PostResponseDto postDetails = new PostResponseDto(post, retweetCheck, postLikeCheck, commentCheck, bookmarkCheck, commentList);
         return postDetails;
     }
 }
