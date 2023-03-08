@@ -28,6 +28,7 @@ public class PostResponseDto {
     private Boolean retweetCheck;
     private Boolean likeCheck;
     private Boolean commentCheck;
+    private Boolean bookmarkCheck;
     private List<CommentResponseDto> commentList;
 
 
@@ -48,7 +49,7 @@ public class PostResponseDto {
 
 
     @Builder
-    public PostResponseDto(Post post, boolean retweetCheck, boolean likeCheck){
+    public PostResponseDto(Post post, boolean retweetCheck, boolean likeCheck, boolean bookmarkCheck){
         this.id = post.getId();
         this.content = post.getContent();
         this.imageUrls = post.getImageUrls();
@@ -58,13 +59,14 @@ public class PostResponseDto {
         this.likeCheck = likeCheck;
         this.retweetCheck = retweetCheck;
         this.commentCheck = false;
+        this.bookmarkCheck = bookmarkCheck;
         this.userId = post.getUser().getUserId();
         this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();
     }
     @Builder
     public PostResponseDto(Post post, boolean retweetCheck,
-                           boolean likeCheck, boolean commentCheck,
+                           boolean likeCheck, boolean commentCheck, boolean bookmarkCheck,
                            List<CommentResponseDto> commentList){
         this.id = post.getId();
         this.content = post.getContent();
@@ -75,6 +77,7 @@ public class PostResponseDto {
         this.likeCheck = likeCheck;
         this.retweetCheck = retweetCheck;
         this.commentCheck = commentCheck;
+        this.bookmarkCheck = bookmarkCheck;
         this.userId = post.getUser().getUserId();
         this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();
