@@ -22,24 +22,24 @@ public class CommentController {
     private final CommentService commentService;
 
     // 댓글 작성
-    @PostMapping("/{id}")
-    public StatusResponseDto<CommentResponseDto> createComment(@PathVariable Long id, @RequestBody CommentRequestDto commentRequestDto,
+    @PostMapping("/{postId}")
+    public StatusResponseDto<CommentResponseDto> createComment(@PathVariable Long postId, @RequestBody CommentRequestDto commentRequestDto,
                                                                @Parameter(hidden = true)@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return commentService.createComment(id, commentRequestDto, userDetails);
+        return commentService.createComment(postId, commentRequestDto, userDetails);
     }
 
     //댓글 삭제
-    @DeleteMapping("/{id}")
-    public StatusResponseDto<String> deleteComment(@PathVariable Long id,
+    @DeleteMapping("/{commentId}")
+    public StatusResponseDto<String> deleteComment(@PathVariable Long commentId,
                                                    @Parameter(hidden = true)@AuthenticationPrincipal UserDetailsImpl userDetails) throws AuthenticationException {
-        return commentService.deleteComment(id, userDetails);
+        return commentService.deleteComment(commentId, userDetails);
     }
 
     // 댓글 좋아요
-    @PostMapping("/like/{id}")
-    public StatusResponseDto<IsLikeResponseDto> likeComment(@PathVariable Long id,
+    @PostMapping("/like/{commentId}")
+    public StatusResponseDto<IsLikeResponseDto> likeComment(@PathVariable Long commentId,
                                                             @Parameter(hidden = true)@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return commentService.likeComment(id, userDetails);
+        return commentService.likeComment(commentId, userDetails);
     }
 
 }
