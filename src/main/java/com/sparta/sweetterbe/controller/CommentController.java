@@ -22,7 +22,7 @@ public class CommentController {
 
     // 댓글 작성
     @PostMapping("/{id}")
-    public StatusResponseDto<CommentResponseDto> createComment(@PathVariable Long id, String content,
+    public StatusResponseDto<CommentResponseDto> createComment(@PathVariable Long id, @RequestBody String content,
                                                                @Parameter(hidden = true)@AuthenticationPrincipal UserDetailsImpl userDetails){
         return commentService.createComment(id, content, userDetails);
     }
