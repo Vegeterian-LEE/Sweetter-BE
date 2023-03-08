@@ -28,6 +28,7 @@ public class ProfileService {
     private final UserRepository userRepository;
     private final RetweetRepository retweetRepository;
     private final CommentRepository commentRepository;
+    private final BookMarkRepository bookMarkRepository;
 
     // 첫번째 리스트
     @Transactional
@@ -41,15 +42,18 @@ public class ProfileService {
         List<ProfileResponseDto> tweetList = new ArrayList<>();
         for(Post post : postList){
             Boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
-            tweetList.add(new ProfileResponseDto(post,postLikeCheck));
+            Boolean bookMarkCheck = !bookMarkRepository.findAllByUserIdAndPostId(user.getId(), post.getId()).isEmpty();
+            tweetList.add(new ProfileResponseDto(post,bookMarkCheck,postLikeCheck));
         }
 
         List<Retweet> retweetList = retweetRepository.findAllByUserId(user.getId());
         for(Retweet retweet: retweetList){
+            Boolean bookMarkCheck = !bookMarkRepository.findAllByUserIdAndPostId(user.getId(),
+                    retweet.getPost().getId()).isEmpty();
             Boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),
                     retweet.getPost().getId()).isEmpty();
             Boolean retweetCheck = retweet.getUser().getId().equals(user.getId());
-            tweetList.add(new ProfileResponseDto(retweet.getPost(), retweetCheck,postLikeCheck));
+            tweetList.add(new ProfileResponseDto(retweet.getPost(), bookMarkCheck, retweetCheck,postLikeCheck));
         }
         tweetList = DeduplicationUtils.deduplication(tweetList, ProfileResponseDto::getId);
         Collections.sort(tweetList, ((o1, o2) -> (int)(o2.getId() - o1.getId())));
@@ -66,30 +70,36 @@ public class ProfileService {
         List<Post> postList = postRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
         List<ProfileResponseDto> tweetList = new ArrayList<>();
         for(Post post : postList){
+            Boolean bookMarkCheck = !bookMarkRepository.findAllByUserIdAndPostId(user.getId(),
+                    post.getId()).isEmpty();
             Boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
-            tweetList.add(new ProfileResponseDto(post,postLikeCheck));
+            tweetList.add(new ProfileResponseDto(post,bookMarkCheck,postLikeCheck));
         }
 
         List<Retweet> retweetList = retweetRepository.findAllByUserId(user.getId());
         for(Retweet retweet: retweetList){
+            Boolean bookMarkCheck = !bookMarkRepository.findAllByUserIdAndPostId(user.getId(),
+                    retweet.getPost().getId()).isEmpty();
             Boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),
                     retweet.getPost().getId()).isEmpty();
             Boolean retweetCheck = retweet.getUser().getId().equals(user.getId());
-            tweetList.add(new ProfileResponseDto(retweet.getPost(), retweetCheck,postLikeCheck));
+            tweetList.add(new ProfileResponseDto(retweet.getPost(), bookMarkCheck,retweetCheck,postLikeCheck));
         }
 
         //댓글 단 트윗도 조회
         List<Comment> commentlist = commentRepository.findAllByUserOrderByCreatedAtDesc(user);
         for(Comment comment: commentlist){
+            Boolean bookMarkCheck = !bookMarkRepository.findAllByUserIdAndPostId(user.getId(),
+                    comment.getPost().getId()).isEmpty();
             Boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),
                     comment.getPost().getId()).isEmpty();
             Boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),
                     comment.getPost().getId()).isEmpty();
-            tweetList.add(new ProfileResponseDto(comment.getPost(), retweetCheck,postLikeCheck,comment));
+            tweetList.add(new ProfileResponseDto(comment.getPost(),bookMarkCheck, retweetCheck,postLikeCheck,comment));
         }
         tweetList = DeduplicationUtils.deduplication(tweetList, ProfileResponseDto::getId);
 
-        //o2-o1으로 해야 내림차순 정렬
+        //o2-o1으로 해서 내림차순 정렬
         Collections.sort(tweetList, ((o1, o2) -> (int)(o2.getId() - o1.getId())));
         return tweetList;
     }
@@ -111,11 +121,13 @@ public class ProfileService {
         }*/
         for(Post post: postList){
             if(!post.getImageUrls().isEmpty()){
+                Boolean bookMarkCheck = !bookMarkRepository.findAllByUserIdAndPostId(user.getId(),
+                        post.getId()).isEmpty();
                 Boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),
                         post.getId()).isEmpty();
                 Boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),
                         post.getId()).isEmpty();
-                MediaPostList.add(new ProfileResponseDto(post,retweetCheck,postLikeCheck));
+                MediaPostList.add(new ProfileResponseDto(post,bookMarkCheck,retweetCheck,postLikeCheck));
             }
         }
 
@@ -129,17 +141,17 @@ public class ProfileService {
         User user = userRepository.findById(userId).orElseThrow(
                 ()-> new EntityNotFoundException("해당 유저를 찾을 수 없습니다.")
         );
-        List<PostLike> likeList = postLikeRepository.findAllByUser(user);
+        List<PostLike> likeList = postLikeRepository.findAllByUserOrderByCreatedAtDesc(user);
         List<ProfileResponseDto> likePostList = new ArrayList<>();
         for(PostLike postLike: likeList){
-            Boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),
+            Boolean bookMarkCheck = !bookMarkRepository.findAllByUserIdAndPostId(user.getId(),
                     postLike.getPost().getId()).isEmpty();
+            Boolean postLikeCheck = postLike.getUser().getId().equals(user.getId());
             Boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),
                     postLike.getPost().getId()).isEmpty();
 
-            likePostList.add(new ProfileResponseDto(postLike.getPost(),retweetCheck,postLikeCheck));
+            likePostList.add(new ProfileResponseDto(postLike.getPost(),bookMarkCheck,retweetCheck,postLikeCheck));
         }
-        Collections.sort(likePostList, (o1, o2) -> (int)(o2.getId() - o1.getId()));
         return likePostList;
     }
 }

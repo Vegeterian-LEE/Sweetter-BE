@@ -30,11 +30,12 @@ public class ProfileResponseDto {
     private Boolean retweetCheck;
     private Boolean postLikeCheck;
     private Boolean commentCheck;
+    private Boolean bookmarkCheck;
 
     private List<CommentResponseDto> commentList = new ArrayList<>();
 
     @Builder
-    public ProfileResponseDto(Post post, boolean retweetCheck, boolean postLikeCheck){
+    public ProfileResponseDto(Post post, boolean bookmarkCheck, boolean retweetCheck, boolean postLikeCheck){
         this.id = post.getId();
         this.content = post.getContent();
         this.imageUrls = post.getImageUrls();
@@ -43,14 +44,16 @@ public class ProfileResponseDto {
         this.likeCount = post.getLikes().size();
         this.retweetCheck = retweetCheck;
         this.postLikeCheck = postLikeCheck;
+        this.bookmarkCheck =bookmarkCheck;
         this.userId = post.getUser().getUserId();
         this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();
     }
 
     @Builder
-    public ProfileResponseDto(Post post, boolean retweetCheck,
-                              boolean postLikeCheck, Comment comment){
+    public ProfileResponseDto(Post post, boolean bookmarkCheck,
+                              boolean retweetCheck, boolean postLikeCheck,
+                              Comment comment){
         this.id = post.getId();
         this.content = post.getContent();
         this.imageUrls = post.getImageUrls();
@@ -59,6 +62,7 @@ public class ProfileResponseDto {
         this.likeCount = post.getLikes().size();
         this.retweetCheck = retweetCheck;
         this.postLikeCheck = postLikeCheck;
+        this.bookmarkCheck =bookmarkCheck;
         this.userId = post.getUser().getUserId();
         this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();
@@ -67,19 +71,8 @@ public class ProfileResponseDto {
     }
 
     @Builder
-    public ProfileResponseDto(Post post){
-        this.id = post.getId();
-        this.content = post.getContent();
-        this.imageUrls = post.getImageUrls();
-        this.commentCount = post.getComments().size();
-        this.retweetCount = post.getRetweets().size();
-        this.likeCount = post.getLikes().size();
-        this.userId = post.getUser().getUserId();
-        this.username = post.getUser().getUsername();
-        this.createdAt = post.getCreatedAt();
-    }
-    @Builder
-    public ProfileResponseDto(Post post, boolean postLikeCheck){
+    public ProfileResponseDto(Post post, boolean bookmarkCheck,
+                              boolean postLikeCheck){
         this.id = post.getId();
         this.content = post.getContent();
         this.imageUrls = post.getImageUrls();
@@ -90,5 +83,6 @@ public class ProfileResponseDto {
         this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();
         this.postLikeCheck = postLikeCheck;
+        this.bookmarkCheck =bookmarkCheck;
     }
 }
