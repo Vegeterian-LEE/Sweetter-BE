@@ -9,6 +9,7 @@ import java.util.Map;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByPostId(Long id);
+    List<Comment> findAllByUserIdAndPostId(Long userid, Long postid);
 
 
     List<Comment> findAllByUserOrderByCreatedAtDesc(User user);

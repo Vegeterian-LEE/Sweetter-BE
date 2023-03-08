@@ -36,6 +36,7 @@ public class PostService {
         User user = userRepository.findByUserId(userDetails.getUser().getUserId()).orElseThrow(
                 () -> new EntityNotFoundException("회원을 찾지 못했습니다.")
         );
+        //내가 작성한 post말고 모두 생성일자 내림차순으로 갖고 오기
         List<Post> allPost = postRepository.findAllByUserNotOrderByCreatedAtDesc(user);
         List<PostResponseDto> allPostResponse = new ArrayList<>();
         for (Post post : allPost){
@@ -45,7 +46,7 @@ public class PostService {
         }
         // 팔로우 한 유저의 게시글만 조회
         List<PostResponseDto> followedPostResponse = new ArrayList<>();
-        List<Follow> followList= followRepository.findAllByFollowing_IdAndIsAccepted(user.getId(),true);
+        List<Follow> followList= followRepository.findAllByFollower(user);
         for (Post post : allPost) {
             for (int i=0; i<followList.size(); i++){
         if (followList.get(i).getFollower().getId()==post.getUser().getId()){
@@ -158,18 +159,19 @@ public class PostService {
 
         boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
         boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+        boolean commentCheck = !commentRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
         List<Comment> comments = commentRepository.findAllByPostId(postId);
 
         //최신 댓글 순으로 보여질 수 있도록 구현
         comments.sort(Comparator.comparing(Comment::getCreatedAt).reversed());
         List<CommentResponseDto> commentList = new ArrayList<>();
+
         for (Comment comment : comments){
             boolean commentLikeCheck = !commentLikeRepository.findAllByUserIdAndCommentId(user.getId(),comment.getId()).isEmpty();
             commentList.add(new CommentResponseDto(comment, commentLikeCheck));
         }
-
         //PostResponseDto 오버로드 매개변수만 다르게 해서 접근
-        PostResponseDto postDetails = new PostResponseDto(post, retweetCheck, postLikeCheck, commentList);
+        PostResponseDto postDetails = new PostResponseDto(post, retweetCheck, postLikeCheck, commentCheck, commentList);
         return postDetails;
     }
 }

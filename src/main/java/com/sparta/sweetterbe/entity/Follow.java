@@ -14,8 +14,8 @@ public class Follow {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private boolean isAccepted = false;
+//    @Column
+//    private boolean isAccepted = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
@@ -31,7 +31,7 @@ public class Follow {
         this.following = following;
     }
 
-    public void approve() {
-        this.isAccepted = true;
-    }
+//    public void approve() {
+//        this.isAccepted = true;
+//    }
 }

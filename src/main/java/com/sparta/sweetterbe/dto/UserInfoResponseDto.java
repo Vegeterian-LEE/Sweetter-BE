@@ -6,21 +6,28 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UserResponseDto {
+public class UserInfoResponseDto {
+    private Long id;
     private String userId;
     private String username;
     private String profileImage;
     private String backgroundImage;
     private String introduction;
     private String email;
+    private int followingnumber;
+    private int followernumber;
 
-    public UserResponseDto(User user){
+
+    public UserInfoResponseDto(User user, int followernumber, int followingnumber){
+        this.id=user.getId();
         this.username = user.getUsername();
         this.userId = user.getUserId();
         this.profileImage = user.getProfileImage();
         this.backgroundImage = user.getBackgroundImage();
         this.introduction = user.getIntroduction();
         this.email = user.getEmail();
+        this.followingnumber = followingnumber;
+        this.followernumber = followernumber;
     }
 
 }

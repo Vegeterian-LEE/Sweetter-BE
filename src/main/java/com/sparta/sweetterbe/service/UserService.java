@@ -1,6 +1,7 @@
 package com.sparta.sweetterbe.service;
 
 import com.sparta.sweetterbe.dto.*;
+import com.sparta.sweetterbe.entity.Follow;
 import com.sparta.sweetterbe.entity.User;
 import com.sparta.sweetterbe.entity.UserRoleEnum;
 import com.sparta.sweetterbe.jwt.JwtUtil;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -85,7 +87,7 @@ public class UserService {
         List<User> users = userRepository.findAllByUserIdNot(userDetails.getUser().getUserId());
         List<UserListDto> userList = new ArrayList<>();
         for (User user : users) {
-            boolean followed = !followRepository.findAllByFollowing_IdAndFollower_IdAndIsAccepted(userDetails.getUser().getId(), user.getId(), true).isEmpty();
+            boolean followed = !followRepository.findAllByFollowing_IdAndFollower_Id(userDetails.getUser().getId(), user.getId()).isEmpty();
             if (!followed) {
                 userList.add(new UserListDto(user, false));
             }
@@ -105,5 +107,25 @@ public class UserService {
         }
         }
         return searchUserList;
+    }
+
+    @Transactional
+    public UserInfoResponseDto getUserInfo(UserDetailsImpl userDetails){
+        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                ()-> new EntityNotFoundException("해당 유저가 존재하지 않습니다")
+        );
+        int followernumber=0;
+        int followingnumber=0;
+        for(Follow follow : user.getFollowers()){
+           // if(follow.isAccepted()){
+                followingnumber++;
+           // }
+        }
+        for(Follow follow : user.getFollowings()){
+           // if(follow.isAccepted()){
+                followernumber++;
+           // }
+        }
+        return new UserInfoResponseDto(user,followernumber,followingnumber);
     }
 }

@@ -39,11 +39,11 @@ public class PostResponseDto {
         this.commentCount = post.getComments().size();
         this.retweetCount = post.getRetweets().size();
         this.likeCount = post.getLikes().size();
+        this.commentCheck = false;
+        this.retweetCheck = false;
         this.userId = post.getUser().getUserId();
         this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();
-        this.commentCheck = false;
-        this.retweetCheck = false;
     }
 
 
@@ -57,12 +57,15 @@ public class PostResponseDto {
         this.likeCount = post.getLikes().size();
         this.likeCheck = likeCheck;
         this.retweetCheck = retweetCheck;
+        this.commentCheck = false;
         this.userId = post.getUser().getUserId();
         this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();
     }
     @Builder
-    public PostResponseDto(Post post, boolean retweetCheck, boolean likeCheck, List<CommentResponseDto> commentList){
+    public PostResponseDto(Post post, boolean retweetCheck,
+                           boolean likeCheck, boolean commentCheck,
+                           List<CommentResponseDto> commentList){
         this.id = post.getId();
         this.content = post.getContent();
         this.imageUrls = post.getImageUrls();
@@ -71,6 +74,7 @@ public class PostResponseDto {
         this.likeCount = post.getLikes().size();
         this.likeCheck = likeCheck;
         this.retweetCheck = retweetCheck;
+        this.commentCheck = commentCheck;
         this.userId = post.getUser().getUserId();
         this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();

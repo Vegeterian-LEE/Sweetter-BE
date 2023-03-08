@@ -46,5 +46,11 @@ public class UserController {
         return StatusResponseDto.success(userService.searchUser(searchWord, userDetails));
     }
 
+    @GetMapping("/info")
+    public StatusResponseDto<UserInfoResponseDto> userinfo(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return StatusResponseDto.success(userService.getUserInfo(userDetails));
+    }
+
 
 }
