@@ -1,11 +1,14 @@
 package com.sparta.sweetterbe.profile.dto;
 
+import com.sparta.sweetterbe.dto.CommentResponseDto;
+import com.sparta.sweetterbe.entity.Comment;
 import com.sparta.sweetterbe.entity.Post;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,9 +28,13 @@ public class ProfileResponseDto {
     private int likeCount;
     private LocalDateTime createdAt;
     private Boolean retweetCheck;
+    private Boolean postLikeCheck;
+    private Boolean commentCheck;
+
+    private List<CommentResponseDto> commentList = new ArrayList<>();
 
     @Builder
-    public ProfileResponseDto(Post post, boolean retweetCheck){
+    public ProfileResponseDto(Post post, boolean retweetCheck, boolean postLikeCheck){
         this.id = post.getId();
         this.content = post.getContent();
         this.imageUrls = post.getImageUrls();
@@ -35,9 +42,28 @@ public class ProfileResponseDto {
         this.retweetCount = post.getRetweets().size();
         this.likeCount = post.getLikes().size();
         this.retweetCheck = retweetCheck;
+        this.postLikeCheck = postLikeCheck;
         this.userId = post.getUser().getUserId();
         this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();
+    }
+
+    @Builder
+    public ProfileResponseDto(Post post, boolean retweetCheck,
+                              boolean postLikeCheck, Comment comment){
+        this.id = post.getId();
+        this.content = post.getContent();
+        this.imageUrls = post.getImageUrls();
+        this.commentCount = post.getComments().size();
+        this.retweetCount = post.getRetweets().size();
+        this.likeCount = post.getLikes().size();
+        this.retweetCheck = retweetCheck;
+        this.postLikeCheck = postLikeCheck;
+        this.userId = post.getUser().getUserId();
+        this.username = post.getUser().getUsername();
+        this.createdAt = post.getCreatedAt();
+        this.commentCheck=true;
+        this.commentList.add(new CommentResponseDto(comment));
     }
 
     @Builder
@@ -51,5 +77,18 @@ public class ProfileResponseDto {
         this.userId = post.getUser().getUserId();
         this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();
+    }
+    @Builder
+    public ProfileResponseDto(Post post, boolean postLikeCheck){
+        this.id = post.getId();
+        this.content = post.getContent();
+        this.imageUrls = post.getImageUrls();
+        this.commentCount = post.getComments().size();
+        this.retweetCount = post.getRetweets().size();
+        this.likeCount = post.getLikes().size();
+        this.userId = post.getUser().getUserId();
+        this.username = post.getUser().getUsername();
+        this.createdAt = post.getCreatedAt();
+        this.postLikeCheck = postLikeCheck;
     }
 }

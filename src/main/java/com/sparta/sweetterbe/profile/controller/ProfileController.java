@@ -31,8 +31,8 @@ public class ProfileController {
         return StatusResponseDto.success(profileService.getTweetList(userId, userDetails));
     }
 
-    //내가 쓴 댓글이 달린 글과 리트윗과 내가 쓴글까지 나오는 글
-    @GetMapping("/tweetlistAndCommentlist/{userId}")
+    //내가 쓴 댓글이 달린 트윗과 리트윗과 내가 쓴글까지 나오는 글
+    @GetMapping("/tweetlistAndCommenttweet/{userId}")
     public StatusResponseDto<List<ProfileResponseDto>> getUserList(
             @PathVariable Long userId, @Parameter(hidden = true)@AuthenticationPrincipal UserDetailsImpl userDetails){
         return StatusResponseDto.success(profileService.getUserList(userId, userDetails));

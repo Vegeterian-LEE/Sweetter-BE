@@ -38,30 +38,20 @@ public class ProfileService {
         );
 
         List<Post> postList = postRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
-        boolean retweetCheck_tmp=false;
         List<ProfileResponseDto> tweetList = new ArrayList<>();
-        // tweet된 게시글을 보여줄 때 retweetcheck는 null로 보여서 수정
-        // ProfileResponseDto에서 retweetcheck가 변수로 선언되었는 데
-        // 오버로드 외에 값을 안 넣어주면 null이 생겨서 수정
         for(Post post : postList){
-            for(Retweet retweet : post.getRetweets()){
-                Boolean retweetCheck = retweet.getUser().getId().equals(user.getId());
-                retweetCheck_tmp=retweetCheck;
-            }
-            tweetList.add(new ProfileResponseDto(post,retweetCheck_tmp));
+            Boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+            tweetList.add(new ProfileResponseDto(post,postLikeCheck));
         }
 
         List<Retweet> retweetList = retweetRepository.findAllByUserId(user.getId());
-        for(int i = 0; i < retweetList.size(); i++){
-            Boolean retweetCheck = retweetList.get(i).getUser().getId().equals(user.getId());
-            /*if(retweetCheck == null){
-                retweetCheck = false;
-            }*/
-            tweetList.add(new ProfileResponseDto(retweetList.get(i).getPost(), retweetCheck));
+        for(Retweet retweet: retweetList){
+            Boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),
+                    retweet.getPost().getId()).isEmpty();
+            Boolean retweetCheck = retweet.getUser().getId().equals(user.getId());
+            tweetList.add(new ProfileResponseDto(retweet.getPost(), retweetCheck,postLikeCheck));
         }
         tweetList = DeduplicationUtils.deduplication(tweetList, ProfileResponseDto::getId);
-
-        //o2-o1으로 해야 id 별로 내림차순 정렬
         Collections.sort(tweetList, ((o1, o2) -> (int)(o2.getId() - o1.getId())));
         return tweetList;
     }
@@ -70,53 +60,35 @@ public class ProfileService {
     @Transactional
     public List<ProfileResponseDto> getUserList(Long userId, UserDetailsImpl userDetails) {
         User user = userRepository.findById(userId).orElseThrow(
-                ()-> new EntityNotFoundException("해당 유저를 찾을 수 없습니다.")
+                ()-> new EntityNotFoundException("해당 유저를 찾지 못했습니다.")
         );
 
         List<Post> postList = postRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
-        boolean retweetCheck_Intweet=false;
         List<ProfileResponseDto> tweetList = new ArrayList<>();
-        // tweet된 게시글을 보여줄 때 retweetcheck는 null로 보여서 수정
-        // ProfileResponseDto에서 retweetcheck가 변수로 선언되었는 데
-        // 오버로드 외에 값을 안 넣어주면 null이 생겨서 수정
         for(Post post : postList){
-            for(Retweet retweet : post.getRetweets()){
-                Boolean retweetCheck = retweet.getUser().getId().equals(user.getId());
-                retweetCheck_Intweet=retweetCheck;
-            }
-            tweetList.add(new ProfileResponseDto(post,retweetCheck_Intweet));
+            Boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),post.getId()).isEmpty();
+            tweetList.add(new ProfileResponseDto(post,postLikeCheck));
         }
 
-        //리트윗한 게시글도 참조
         List<Retweet> retweetList = retweetRepository.findAllByUserId(user.getId());
-        for(int i = 0; i < retweetList.size(); i++){
-            Boolean retweetCheck = retweetList.get(i).getUser().getId().equals(user.getId());
-            /*if(retweetCheck == null){
-                retweetCheck = false;
-            }*/
-            tweetList.add(new ProfileResponseDto(retweetList.get(i).getPost(), retweetCheck));
+        for(Retweet retweet: retweetList){
+            Boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),
+                    retweet.getPost().getId()).isEmpty();
+            Boolean retweetCheck = retweet.getUser().getId().equals(user.getId());
+            tweetList.add(new ProfileResponseDto(retweet.getPost(), retweetCheck,postLikeCheck));
         }
-        tweetList = DeduplicationUtils.deduplication(tweetList, ProfileResponseDto::getId);
 
         //댓글 단 트윗도 조회
         List<Comment> commentlist = commentRepository.findAllByUserOrderByCreatedAtDesc(user);
-        boolean retweetCheck_Inretweet=false;
-
         for(Comment comment: commentlist){
-            for(Retweet retweet : comment.getPost().getRetweets()){
-                Boolean retweetCheck = retweet.getUser().getId().equals(user.getId());
-                retweetCheck_Inretweet=retweetCheck;
-            }
-            tweetList.add(new ProfileResponseDto(comment.getPost(), retweetCheck_Inretweet));
+            Boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),
+                    comment.getPost().getId()).isEmpty();
+            Boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),
+                    comment.getPost().getId()).isEmpty();
+            tweetList.add(new ProfileResponseDto(comment.getPost(), retweetCheck,postLikeCheck,comment));
         }
         tweetList = DeduplicationUtils.deduplication(tweetList, ProfileResponseDto::getId);
 
-        /*List<Comment> comments = commentRepository.findAllByUserOrderByCreatedAtDesc(user);
-        List<CommentResponseDto> commentList = new ArrayList<>();
-        for(Comment comment : comments){
-            commentList.add(new CommentResponseDto(comment));
-        }*/
-        //return new ProfileSecondListResponsDto(tweetList, commentList);
         //o2-o1으로 해야 내림차순 정렬
         Collections.sort(tweetList, ((o1, o2) -> (int)(o2.getId() - o1.getId())));
         return tweetList;
@@ -139,7 +111,11 @@ public class ProfileService {
         }*/
         for(Post post: postList){
             if(!post.getImageUrls().isEmpty()){
-                MediaPostList.add(new ProfileResponseDto(post));
+                Boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),
+                        post.getId()).isEmpty();
+                Boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),
+                        post.getId()).isEmpty();
+                MediaPostList.add(new ProfileResponseDto(post,retweetCheck,postLikeCheck));
             }
         }
 
@@ -155,10 +131,14 @@ public class ProfileService {
         );
         List<PostLike> likeList = postLikeRepository.findAllByUser(user);
         List<ProfileResponseDto> likePostList = new ArrayList<>();
-        for (int i = 0; i < likeList.size(); i++){
-            likePostList.add(new ProfileResponseDto(likeList.get(i).getPost()));
-        }
+        for(PostLike postLike: likeList){
+            Boolean postLikeCheck = !postLikeRepository.findAllByUserIdAndPostId(user.getId(),
+                    postLike.getPost().getId()).isEmpty();
+            Boolean retweetCheck = !retweetRepository.findAllByUserIdAndPostId(user.getId(),
+                    postLike.getPost().getId()).isEmpty();
 
+            likePostList.add(new ProfileResponseDto(postLike.getPost(),retweetCheck,postLikeCheck));
+        }
         Collections.sort(likePostList, (o1, o2) -> (int)(o2.getId() - o1.getId()));
         return likePostList;
     }
