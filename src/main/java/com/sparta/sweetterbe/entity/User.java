@@ -2,6 +2,7 @@ package com.sparta.sweetterbe.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.sweetterbe.dto.UserRequestDto;
+import com.sparta.sweetterbe.dto.UserUpdateDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -69,6 +70,14 @@ public class User extends TimeStamped{
         this.backgroundImage = userRequestDto.getBackgroundImage();
         this.introduction = userRequestDto.getIntroduction();
         this.username = userRequestDto.getUsername();
+    }
+
+    public void update(UserUpdateDto userUpdateDto, String profileImage,
+                       String backgroundImage) {
+        this.profileImage = profileImage;
+        this.backgroundImage = backgroundImage;
+        this.introduction = userUpdateDto.getIntroduction();
+        this.username = userUpdateDto.getUsername();
     }
 
     public void updatePassword(String newPassword) {
