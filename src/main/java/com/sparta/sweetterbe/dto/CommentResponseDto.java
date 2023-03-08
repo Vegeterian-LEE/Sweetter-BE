@@ -1,15 +1,15 @@
 package com.sparta.sweetterbe.dto;
 
 import com.sparta.sweetterbe.entity.Comment;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @Builder
+@Setter
+@Getter
 public class CommentResponseDto {
 
     private Long id;

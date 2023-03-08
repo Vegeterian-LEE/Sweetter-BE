@@ -1,6 +1,7 @@
 package com.sparta.sweetterbe.controller;
 
 
+import com.sparta.sweetterbe.dto.CommentRequestDto;
 import com.sparta.sweetterbe.dto.CommentResponseDto;
 import com.sparta.sweetterbe.dto.IsLikeResponseDto;
 import com.sparta.sweetterbe.dto.StatusResponseDto;
@@ -22,9 +23,9 @@ public class CommentController {
 
     // 댓글 작성
     @PostMapping("/{id}")
-    public StatusResponseDto<CommentResponseDto> createComment(@PathVariable Long id, @RequestBody String content,
+    public StatusResponseDto<CommentResponseDto> createComment(@PathVariable Long id, @RequestBody CommentRequestDto commentRequestDto,
                                                                @Parameter(hidden = true)@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return commentService.createComment(id, content, userDetails);
+        return commentService.createComment(id, commentRequestDto, userDetails);
     }
 
     //댓글 삭제
