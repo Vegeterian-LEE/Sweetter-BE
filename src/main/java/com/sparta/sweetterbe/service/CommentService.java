@@ -1,5 +1,6 @@
 package com.sparta.sweetterbe.service;
 
+import com.sparta.sweetterbe.dto.CommentRequestDto;
 import com.sparta.sweetterbe.dto.CommentResponseDto;
 import com.sparta.sweetterbe.dto.IsLikeResponseDto;
 import com.sparta.sweetterbe.dto.StatusResponseDto;
@@ -27,10 +28,10 @@ public class CommentService {
 
 
     // 댓글 작성
-    public StatusResponseDto<CommentResponseDto> createComment(Long id, String content, UserDetailsImpl userDetails) {
+    public StatusResponseDto<CommentResponseDto> createComment(Long id, CommentRequestDto commentRequestDto, UserDetailsImpl userDetails) {
 
         Post post = postRepository.findById(id).orElseThrow(() -> new NullPointerException("등록되지 않은 게시글입니다."));
-        Comment comment = new Comment(userDetails.getUser(), post, content);
+        Comment comment = new Comment(userDetails.getUser(), post, commentRequestDto.getContent());
         commentRepository.save(comment);
         return StatusResponseDto.success(new CommentResponseDto(comment));
     }
