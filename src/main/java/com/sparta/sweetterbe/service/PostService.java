@@ -46,7 +46,7 @@ public class PostService {
         }
         // 팔로우 한 유저의 게시글만 조회
         List<PostResponseDto> followedPostResponse = new ArrayList<>();
-        List<Follow> followList= followRepository.findAllByFollower(user);
+        List<Follow> followList= followRepository.findAllByFollowing(user);
         for (Post post : allPost) {
             for (int i=0; i<followList.size(); i++){
         if (followList.get(i).getFollower().getId()==post.getUser().getId()){
