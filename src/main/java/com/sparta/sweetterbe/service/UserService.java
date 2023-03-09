@@ -138,8 +138,8 @@ public class UserService {
         if (!newPassword.isEmpty()){
             user.updatePassword(passwordEncoder.encode(newPassword));
         }
-        String profileImageUrl = s3UploadService.uploadFile(profileImage, "sweetter");
-        String backgroundImageUrl = s3UploadService.uploadFile(backgroundImage, "sweetter");
+        String profileImageUrl = s3UploadService.uploadFile(profileImage);
+        String backgroundImageUrl = s3UploadService.uploadFile(backgroundImage);
         user.update(username, introduction, profileImageUrl, backgroundImageUrl);
         return new UserResponseDto(user);
     }

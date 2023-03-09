@@ -31,20 +31,20 @@ public class S3UploadService {
         for (MultipartFile multipartfile : multipartFiles){
             File uploadFile = convert(multipartfile)  // 파일 변환할 수 없으면 에러
                     .orElseThrow (() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
-            imageUrls.add(upload(uploadFile, dirName));
+            imageUrls.add(upload(uploadFile));
         }
         return imageUrls;
     }
 
-    public String uploadFile(MultipartFile multipartFile, String dirName) throws IOException {
+    public String uploadFile(MultipartFile multipartFile) throws IOException {
         File uploadFile = convert(multipartFile)  // 파일 변환할 수 없으면 에러
                 .orElseThrow (() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
-        return upload(uploadFile, dirName);
+        return upload(uploadFile);
     }
 
 
-    public String upload(File uploadFile, String filePath) {
-        String fileName = filePath + "/" + UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름
+    public String upload(File uploadFile) {
+        String fileName = "/" + UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름
         String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
         removeNewFile(uploadFile);
         return uploadImageUrl;
