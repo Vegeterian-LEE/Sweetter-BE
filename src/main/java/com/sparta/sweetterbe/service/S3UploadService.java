@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -22,7 +23,7 @@ public class S3UploadService {
     private final AmazonS3Client amazonS3Client;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-
+    @Transactional
     public List<String> uploadFiles(List<MultipartFile> multipartFiles, String dirName) throws IOException {
         List<String> imageUrls = new ArrayList<>();
         if (multipartFiles.size() > 4) {
@@ -35,7 +36,7 @@ public class S3UploadService {
         }
         return imageUrls;
     }
-
+    @Transactional
     public String uploadFile(MultipartFile multipartFile, String dirName) throws IOException {
         File uploadFile = convert(multipartFile)  // 파일 변환할 수 없으면 에러
                 .orElseThrow (() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
