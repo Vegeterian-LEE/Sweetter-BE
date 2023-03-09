@@ -40,6 +40,14 @@ public class UserController {
                                                             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return StatusResponseDto.success(userService.updateProfile(userRequestDto, userDetails));
     }
+    @PutMapping(consumes = "multipart/form-data", value="/setprofile")
+    public StatusResponseDto<UserResponseDto> setProfile(@RequestParam(value = "username") String username, @RequestParam(value = "introduction") String introduction,
+                                                         @RequestParam(value = "newPassword") String newPassword, @RequestParam(value = "profileImage") MultipartFile profileImage,
+                                                         @RequestParam(value = "backgroundImage") MultipartFile backgroundImage,
+                                                            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return StatusResponseDto.success(userService.setProfile(username, introduction, newPassword, profileImage, backgroundImage, userDetails));
+    }
+
     // 현재는 본인이 팔로우 하지 않은 모든 유저가 나타나게 되어 있음
     @GetMapping("/list")
     public StatusResponseDto<List<UserListDto>> getUserList(@Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails){
