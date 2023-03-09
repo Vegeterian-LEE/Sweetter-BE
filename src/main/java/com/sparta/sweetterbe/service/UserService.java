@@ -75,16 +75,16 @@ public class UserService {
         return new UserResponseDto(user);
     }
 
-/*    @Transactional
-    public UserResponseDto updateProfile(UserRequestDto userRequestDto, UserDetailsImpl userDetails) {
-        User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다."));
-        if (!userRequestDto.getNewPassword().isEmpty()){
-            user.updatePassword(passwordEncoder.encode(userRequestDto.getNewPassword()));
-        }
-        user.update(userRequestDto);
-        return new UserResponseDto(user);
-    }*/
+    /*    @Transactional
+        public UserResponseDto updateProfile(UserRequestDto userRequestDto, UserDetailsImpl userDetails) {
+            User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
+                    () -> new IllegalArgumentException("유저가 존재하지 않습니다."));
+            if (!userRequestDto.getNewPassword().isEmpty()){
+                user.updatePassword(passwordEncoder.encode(userRequestDto.getNewPassword()));
+            }
+            user.update(userRequestDto);
+            return new UserResponseDto(user);
+        }*/
     @Transactional
     public List<UserListDto> getUserList(UserDetailsImpl userDetails) {
         List<User> users = userRepository.findAllByUserIdNot(userDetails.getUser().getUserId());
@@ -108,7 +108,7 @@ public class UserService {
             if (!user.getUserId().equals(userDetails.getUser().getUserId())){
                 boolean followCheck = !followRepository.findAllByFollowing_IdAndFollower_Id(userDetails.getUser().getId(), user.getId()).isEmpty();
                 searchUserList.add(new UserResponseDto(user, followCheck));
-        }
+            }
         }
         return searchUserList;
     }
@@ -121,14 +121,14 @@ public class UserService {
         int followernumber=0;
         int followingnumber=0;
         for(Follow follow : user.getFollowers()){
-           // if(follow.isAccepted()){
-                followingnumber++;
-           // }
+            // if(follow.isAccepted()){
+            followingnumber++;
+            // }
         }
         for(Follow follow : user.getFollowings()){
-           // if(follow.isAccepted()){
-                followernumber++;
-           // }
+            // if(follow.isAccepted()){
+            followernumber++;
+            // }
         }
         return new UserInfoResponseDto(user,followernumber,followingnumber);
     }
@@ -139,8 +139,8 @@ public class UserService {
         if (!newPassword.isEmpty()){
             user.updatePassword(passwordEncoder.encode(newPassword));
         }
-        String profileImageUrl = s3UploadService.uploadFile(profileImage);
-        String backgroundImageUrl = s3UploadService.uploadFile(backgroundImage);
+        String profileImageUrl = s3UploadService.uploadFile(profileImage, "sweetter");
+        String backgroundImageUrl = s3UploadService.uploadFile(backgroundImage, "sweetter");
         user.update(username, introduction, profileImageUrl, backgroundImageUrl);
         return new UserResponseDto(user);
     }
