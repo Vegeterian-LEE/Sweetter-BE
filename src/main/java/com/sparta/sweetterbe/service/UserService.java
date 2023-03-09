@@ -132,6 +132,7 @@ public class UserService {
         }
         return new UserInfoResponseDto(user,followernumber,followingnumber);
     }
+    @Transactional
     public UserResponseDto setProfile(String username, String introduction, String newPassword, MultipartFile profileImage, MultipartFile backgroundImage, UserDetailsImpl userDetails) throws IOException {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다."));
