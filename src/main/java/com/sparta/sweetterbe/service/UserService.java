@@ -75,7 +75,7 @@ public class UserService {
         return new UserResponseDto(user);
     }
 
-    @Transactional
+/*    @Transactional
     public UserResponseDto updateProfile(UserRequestDto userRequestDto, UserDetailsImpl userDetails) {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다."));
@@ -84,14 +84,14 @@ public class UserService {
         }
         user.update(userRequestDto);
         return new UserResponseDto(user);
-    }
+    }*/
     @Transactional
     public List<UserListDto> getUserList(UserDetailsImpl userDetails) {
         List<User> users = userRepository.findAllByUserIdNot(userDetails.getUser().getUserId());
         List<UserListDto> userList = new ArrayList<>();
         for (User user : users) {
-            boolean followed = !followRepository.findAllByFollowing_IdAndFollower_Id(userDetails.getUser().getId(), user.getId()).isEmpty();
-            if (!followed) {
+            boolean followCheck = !followRepository.findAllByFollowing_IdAndFollower_Id(userDetails.getUser().getId(), user.getId()).isEmpty();
+            if (!followCheck) {
                 userList.add(new UserListDto(user, false));
             }
         }
@@ -106,7 +106,8 @@ public class UserService {
         List<UserResponseDto> searchUserList = new ArrayList<>();
         for (User user : allUser){
             if (!user.getUserId().equals(userDetails.getUser().getUserId())){
-            searchUserList.add(new UserResponseDto(user));
+                boolean followCheck = !followRepository.findAllByFollowing_IdAndFollower_Id(userDetails.getUser().getId(), user.getId()).isEmpty();
+                searchUserList.add(new UserResponseDto(user, followCheck));
         }
         }
         return searchUserList;
