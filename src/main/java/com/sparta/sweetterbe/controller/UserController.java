@@ -33,12 +33,12 @@ public class UserController {
         return StatusResponseDto.success(userService.login(loginRequestDto, response));
     }
 
-    //내 정보 변경
+/*    //내 정보 변경
     @PutMapping("/settings/profile")
     public StatusResponseDto<UserResponseDto> updateProfile(@RequestBody UserRequestDto userRequestDto,
                                                             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return StatusResponseDto.success(userService.updateProfile(userRequestDto, userDetails));
-    }
+    }*/
     @PutMapping("/setprofile")
     public StatusResponseDto<UserResponseDto> setProfile(@RequestParam(value = "username") String username, @RequestParam(value = "introduction") String introduction,
                                                          @RequestParam(value = "newPassword") String newPassword, @RequestParam(value = "profileImage") MultipartFile profileImage,
