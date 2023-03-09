@@ -39,7 +39,7 @@ public class UserController {
                                                             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return StatusResponseDto.success(userService.updateProfile(userRequestDto, userDetails));
     }
-    @PutMapping(consumes = "multipart/form-data", value="/setprofile")
+    @PutMapping("/setprofile")
     public StatusResponseDto<UserResponseDto> setProfile(@RequestParam(value = "username") String username, @RequestParam(value = "introduction") String introduction,
                                                          @RequestParam(value = "newPassword") String newPassword, @RequestParam(value = "profileImage") MultipartFile profileImage,
                                                          @RequestParam(value = "backgroundImage") MultipartFile backgroundImage,
