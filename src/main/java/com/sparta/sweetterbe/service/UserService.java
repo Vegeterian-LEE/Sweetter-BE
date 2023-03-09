@@ -13,10 +13,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -129,20 +131,18 @@ public class UserService {
         }
         return new UserInfoResponseDto(user,followernumber,followingnumber);
     }
-
-    @Transactional
-    public UserResponseDto updateUserInfo(UserDetailsImpl userDetails,
-                                              List<String> imageUrls, UserUpdateDto userUpdateDto
-    ){
+    public UserResponseDto setProfile(String username, String introduction, String newPassword, MultipartFile profileImage, MultipartFile backgroundImage, UserDetailsImpl userDetails) throws IOException {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다."));
-        if (!userUpdateDto.getNewPassword().isEmpty()){
-            user.updatePassword(passwordEncoder.encode(userUpdateDto.getNewPassword()));
+        if (!newPassword.isEmpty()){
+            user.updatePassword(passwordEncoder.encode(newPassword));
         }
-           String ProfileImg = imageUrls.get(0);
-           String backgroundImg = imageUrls.get(0);
-
-        user.update(userUpdateDto,ProfileImg,backgroundImg);
+        String profileImageUrl = s3UploadService.uploadFile(profileImage, "sweetter");
+        String backgroundImageUrl = s3UploadService.uploadFile(backgroundImage, "sweetter");
+        user.update(username, introduction, profileImageUrl, backgroundImageUrl);
         return new UserResponseDto(user);
     }
+
+
+
 }
