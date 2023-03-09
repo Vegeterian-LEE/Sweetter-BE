@@ -9,6 +9,10 @@ DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 
 TIME_NOW=$(date +%c)
 
+# 권한 부여
+sudo chown -R ubuntu:ubuntu /home/ubuntu/
+sudo chown -R ubuntu:ubuntu /opt/codedeploy-agent
+
 # build 파일 복사
 echo "$TIME_NOW > $JAR_FILE 파일 복사" >> $DEPLOY_LOG
 cp $PROJECT_ROOT/build/libs/*.jar $JAR_FILE
