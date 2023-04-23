@@ -129,6 +129,11 @@ https://www.figma.com/file/VriPcY0YzZOyyGNpAktytP/Twitter-Hifi-prototype?node-id
 > 사용자 인증, 인가 기능 구현을 위해 Spring Security를 사용하였습니다.
 > 
 
+### ◻ CI/CD - 진규
+
+> EC2 서버에 자동 빌드 배포, Github Action, CodeDeploy를 적용하였습니다.
+> 
+
 ### ◻ S3를 통한 이미지 업로드 - 정환
 
 > 이미지를 업로드 하기 위해 S3를 활용하였습니다
